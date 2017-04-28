@@ -1,0 +1,4 @@
+[root]
+name = "redis-postgres-migrator"
+version = "0.1.0"
+

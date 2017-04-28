@@ -1,3 +1,5 @@
+extern crate redis_postgres_migrator;
+
 fn main() {
-    println!("Hello, world!");
+    println!("bite me");
 }
