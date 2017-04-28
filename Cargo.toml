@@ -1,0 +1,6 @@
+[package]
+name = "redis-postgres-migrator"
+version = "0.1.0"
+authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
+
+[dependencies]
