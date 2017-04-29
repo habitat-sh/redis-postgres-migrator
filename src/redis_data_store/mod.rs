@@ -7,7 +7,8 @@ use hab_net;
 use protocol::sessionsrv;
 use redis::{self, Commands, PipelineCommands};
 
-mod config;
+pub mod config;
+pub mod error;
 
-use config::Config;
-use error::Result;
+pub use self::config::Config;
+pub use self::error::{Error, Result};

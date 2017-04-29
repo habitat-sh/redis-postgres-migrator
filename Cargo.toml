@@ -12,7 +12,7 @@ protobuf = "*"
 redis = "*"
 rustc-serialize = "*"
 time = "*"
-toml = "*"
+toml = "0.1.29"
 
 [dependencies.habitat_builder_dbcache]
 path = "./src/redis_data_store/builder-dbcache"
