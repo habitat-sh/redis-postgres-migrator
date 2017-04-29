@@ -9,6 +9,7 @@ env_logger = "*"
 hyper = "*"
 log = "*"
 protobuf = "*"
+redis = "*"
 rustc-serialize = "*"
 time = "*"
 toml = "*"
@@ -18,3 +19,13 @@ path = "./src/redis_data_store/builder-dbcache"
 
 [dependencies.habitat_builder_protocol]
 path = "./src/redis_data_store/builder-protocol"
+
+[dependencies.habitat_core]
+path = "./src/redis_data_store/core"
+
+[dependencies.habitat_net]
+path = "./src/redis_data_store/net"
+
+[dependencies.zmq]
+git = "https://github.com/erickt/rust-zmq"
+branch = "release/v0.8"
