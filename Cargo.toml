@@ -23,6 +23,9 @@ path = "./src/redis_data_store/builder-protocol"
 [dependencies.habitat_core]
 path = "./src/redis_data_store/core"
 
+[dependencies.habitat_builder_sessionsrv]
+path = "./src/redis_data_store/builder-sessionsrv"
+
 [dependencies.habitat_net]
 path = "./src/redis_data_store/net"
 

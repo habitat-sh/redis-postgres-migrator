@@ -3,12 +3,6 @@ name = "habitat_builder_sessionsrv"
 version = "0.0.0"
 authors = ["Adam Jacob <adam@chef.io>", "Jamie Winsor <reset@chef.io>", "Fletcher Nichol <fnichol@chef.io>", "Joshua Timberman <joshua@chef.io>", "Dave Parfitt <dparfitt@chef.io>"]
 description = "Habitat-Builder Session Server"
-build = "../build.rs"
-workspace = "../../"
-
-[[bin]]
-name = "bldr-session-srv"
-doc = false
 
 [dependencies]
 bitflags = "*"
@@ -16,9 +10,10 @@ env_logger = "*"
 hyper = "*"
 log = "*"
 protobuf = "*"
+redis = "*"
 rustc-serialize = "*"
 time = "*"
-toml = "*"
+toml = "0.1.29"
 
 [dependencies.clap]
 version = "*"
@@ -26,6 +21,7 @@ features = [ "suggestions", "color", "unstable" ]
 
 [dependencies.zmq]
 git = "https://github.com/erickt/rust-zmq.git"
+branch = "release/v0.8"
 
 [dependencies.habitat_core]
 path = "../core"
@@ -38,13 +34,6 @@ path = "../builder-protocol"
 
 [dependencies.habitat_net]
 path = "../net"
-
-[dependencies.redis]
-git = "https://github.com/habitat-sh/redis-rs"
-branch = "habitat"
-
-[replace]
-"redis:0.7.0" = { git = 'https://github.com/habitat-sh/redis-rs', branch = 'habitat' }
 
 [features]
 functional = []
