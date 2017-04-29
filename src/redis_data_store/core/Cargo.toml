@@ -15,11 +15,11 @@ libarchive = "*"
 libc = "*"
 libsodium-sys = "*"
 log = "*"
-regex = "0.1.80"
+regex = "*"
 rustc-serialize = "*"
 sodiumoxide = "*"
 time = "*"
-toml = "0.1.27"
+toml = "*"
 url = "*"
 
 [target.'cfg(not(windows))'.dependencies]
