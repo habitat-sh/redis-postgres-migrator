@@ -4,3 +4,17 @@ version = "0.1.0"
 authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
 
 [dependencies]
+bitflags = "*"
+env_logger = "*"
+hyper = "*"
+log = "*"
+protobuf = "*"
+rustc-serialize = "*"
+time = "*"
+toml = "*"
+
+[dependencies.habitat_builder_dbcache]
+path = "./src/redis_data_store/builder-dbcache"
+
+[dependencies.habitat_builder_protocol]
+path = "./src/redis_data_store/builder-protocol"
