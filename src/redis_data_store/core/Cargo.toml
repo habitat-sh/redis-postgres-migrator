@@ -19,7 +19,7 @@ regex = "*"
 rustc-serialize = "*"
 sodiumoxide = "*"
 time = "*"
-toml = "*"
+toml = "0.1.29"
 url = "*"
 
 [target.'cfg(not(windows))'.dependencies]
