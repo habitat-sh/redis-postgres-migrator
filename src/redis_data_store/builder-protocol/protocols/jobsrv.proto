@@ -1,0 +1,43 @@
+package jobsrv;
+import "protocols/vault.proto";
+
+enum Os {
+  Linux = 1;
+  Darwin = 2;
+  Windows = 3;
+}
+
+enum WorkerState {
+  Ready = 0;
+  Busy = 1;
+}
+
+enum JobState {
+  Pending = 0;
+  Processing = 1;
+  Complete = 2;
+  Rejected = 3;
+  Failed = 4;
+}
+
+message Heartbeat {
+  required string endpoint = 1;
+  required Os os = 2;
+  required WorkerState state = 3;
+}
+
+message Job {
+  required uint64 id = 1;
+  required uint64 owner_id = 2;
+  required JobState state = 3;
+  required vault.Project project = 4;
+}
+
+message JobGet {
+  required uint64 id = 1;
+}
+
+message JobSpec {
+  required uint64 owner_id = 1;
+  required vault.Project project = 2;
+}

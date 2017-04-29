@@ -1,0 +1,23 @@
+[package]
+name = "habitat_builder_dbcache"
+version = "0.0.0"
+authors = ["Adam Jacob <adam@chef.io>", "Jamie Winsor <reset@chef.io>", "Fletcher Nichol <fnichol@chef.io>", "Joshua Timberman <joshua@chef.io>", "Dave Parfitt <dparfitt@chef.io>"]
+description = "Habitat-Builder Database Access Library"
+workspace = "../../"
+
+[dependencies]
+env_logger = "*"
+log = "*"
+num_cpus = "*"
+protobuf = "*"
+redis = "*"
+r2d2 = "*"
+r2d2_redis = "*"
+rustc-serialize = "*"
+time = "*"
+
+[dependencies.habitat_builder_protocol]
+path = "../builder-protocol"
+
+[features]
+functional = []

@@ -1,0 +1,44 @@
+package net;
+
+enum Protocol {
+  Net = 0;
+  RouteSrv = 1;
+  SessionSrv = 2;
+  VaultSrv = 3;
+  JobSrv = 4;
+}
+
+message RouteInfo {
+  required Protocol protocol = 1;
+  optional uint64 hash = 2;
+}
+
+message Msg {
+  required string message_id = 1;
+  required bytes body = 2;
+  optional RouteInfo route_info = 3;
+}
+
+enum ErrCode {
+  BUG = 0;
+  TIMEOUT = 1;
+  REMOTE_REJECTED = 2;
+  BAD_REMOTE_REPLY = 3;
+  ENTITY_NOT_FOUND = 4;
+  NO_SHARD = 6;
+  ACCESS_DENIED = 7;
+  SESSION_EXPIRED = 8;
+  ENTITY_CONFLICT = 9;
+  ZMQ = 10;
+  DATA_STORE = 11;
+  AUTH_SCOPE = 12;
+}
+
+message NetError {
+  required ErrCode code = 1;
+  required string msg = 2;
+}
+
+message NetOk {}
+message Ping {}
+message Pong {}
