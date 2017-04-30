@@ -26,6 +26,7 @@ use toml;
 
 use error::{Error, Result};
 
+#[derive(Debug)]
 pub struct Config {
     /// List of net addresses for routing servers to connect to.
     pub routers: Vec<net::SocketAddrV4>,

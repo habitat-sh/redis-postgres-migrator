@@ -5,5 +5,6 @@ use dbcache;
 use dbcache::data_store::*;
 use hab_net;
 use hab_sessionsrv;
+use hab_sessionsrv::data_store::*;
 use protocol::sessionsrv;
 use redis::{self, Commands, PipelineCommands};

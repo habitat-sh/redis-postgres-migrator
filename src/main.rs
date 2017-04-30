@@ -13,8 +13,10 @@ pub fn redis_to_postgres(thing: String) {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+//    use super::*;
 		use hab_protocol::sessionsrv as proto_session;
+    use hab_sessionsrv::data_store as sessionsrv_data_store;
+    use hab_sessionsrv::config as session_srv_config;
 
 //    fn test_creating_data() {
 
@@ -22,13 +24,25 @@ mod tests {
 
 #[test]
 fn create_account() {
-//    let ds = datastore_test!(DataStore);
+    let config = session_srv_config::Config::default();
+
+//    let ds = hab_sessionsrv::data_store::new();
     let mut sc = proto_session::SessionCreate::new();
-//    sc.set_token(String::from("hail2theking"));
- //   sc.set_extern_id(64);
-//    sc.set_email(String::from("bobo@chef.io"));
-//    sc.set_name(String::from("Bobo T. Clown"));
-//    sc.set_provider(sessionsrv::OAuthProvider::GitHub);
+    sc.set_token(String::from("hail2theking"));
+    sc.set_extern_id(64);
+    sc.set_email(String::from("bobo@chef.io"));
+    sc.set_name(String::from("Bobo T. Clown"));
+    sc.set_provider(proto_session::OAuthProvider::GitHub);
+
+
+//    let mut account = proto_session::Account::new();
+//    account.set_email(sc.get_email().to_string());
+//    account.set_name(sc.get_name().to_string());
+//    sessionsrv_data_store.write(&mut account);
+//    hab_sessionsrv::data_store::DataStore.write(&mut account);
+
+//    DataStore.session_create(&sc);
+//let ds = DataStore::from_pool(pool).expect("Failed to create data store from pool");
 
  //   let session = ds.find_or_create_account_via_session(&sc, true, false, false)
  //       .expect("Should create account");
