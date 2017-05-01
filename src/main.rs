@@ -2,6 +2,7 @@ extern crate redis_postgres_migrator;
 extern crate habitat_builder_sessionsrv as hab_sessionsrv;
 extern crate habitat_builder_protocol as hab_protocol;
 extern crate habitat_builder_dbcache as hab_dbcache;
+extern crate habitat_net as hab_net;
 
 fn main() {
     println!("bite me");
@@ -19,6 +20,8 @@ mod tests {
     use hab_sessionsrv::data_store as sessionsrv_data_store;
     use hab_dbcache::data_store as dbcache_data_store;
     use hab_sessionsrv::config as session_srv_config;
+    use hab_net::routing::{Broker, BrokerConn};
+
 
 //    fn test_creating_data() {
 
@@ -28,7 +31,6 @@ mod tests {
 fn create_account() {
     let config = session_srv_config::Config::default();
 
-//    let ds = hab_sessionsrv::data_store::new();
     let mut sc = proto_session::SessionCreate::new();
     sc.set_token(String::from("hail2theking"));
     sc.set_extern_id(64);
@@ -36,8 +38,16 @@ fn create_account() {
     sc.set_name(String::from("Bobo T. Clown"));
     sc.set_provider(proto_session::OAuthProvider::GitHub);
 
-    let sessionsrv_datastore = sessionsrv_data_store::DataStore
 
+    let mut conn = Broker::connect().unwrap();
+    let session = conn.route::<proto_session::SessionCreate, proto_session::Session>(&sc);
+
+println!("==================");
+println!("{:?}", session)
+
+//    let sessionsrv_datastore = sessionsrv_data_store::DataStore
+
+//    let ds = hab_sessionsrv::data_store::new();
 //    let pool :ConnectionPool = Pool::start(&config);
 //let pool :Arc<ConnectionPool> = Pool::start(&config);
 //    let account = sessionsrv_data_store::AccountTable::new(pool);
