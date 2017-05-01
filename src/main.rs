@@ -1,6 +1,7 @@
 extern crate redis_postgres_migrator;
 extern crate habitat_builder_sessionsrv as hab_sessionsrv;
 extern crate habitat_builder_protocol as hab_protocol;
+extern crate habitat_builder_dbcache as hab_dbcache;
 
 fn main() {
     println!("bite me");
@@ -16,6 +17,7 @@ mod tests {
 //    use super::*;
 		use hab_protocol::sessionsrv as proto_session;
     use hab_sessionsrv::data_store as sessionsrv_data_store;
+    use hab_dbcache::data_store as dbcache_data_store;
     use hab_sessionsrv::config as session_srv_config;
 
 //    fn test_creating_data() {
@@ -33,6 +35,12 @@ fn create_account() {
     sc.set_email(String::from("bobo@chef.io"));
     sc.set_name(String::from("Bobo T. Clown"));
     sc.set_provider(proto_session::OAuthProvider::GitHub);
+
+    let sessionsrv_datastore = sessionsrv_data_store::DataStore
+
+//    let pool :ConnectionPool = Pool::start(&config);
+//let pool :Arc<ConnectionPool> = Pool::start(&config);
+//    let account = sessionsrv_data_store::AccountTable::new(pool);
 
 
 //    let mut account = proto_session::Account::new();
