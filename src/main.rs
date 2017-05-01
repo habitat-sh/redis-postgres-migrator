@@ -4,6 +4,17 @@ extern crate habitat_builder_protocol as hab_protocol;
 extern crate habitat_builder_dbcache as hab_dbcache;
 extern crate habitat_net as hab_net;
 
+extern crate r2d2;
+extern crate r2d2_redis;
+extern crate redis;
+
+use std::default::Default;
+use std::thread;
+
+use r2d2_redis::RedisConnectionManager;
+
+use redis::Commands;
+
 fn main() {
     println!("bite me");
 }
@@ -16,12 +27,23 @@ pub fn redis_to_postgres(thing: String) {
 #[cfg(test)]
 mod tests {
 //    use super::*;
+    use std::sync::Arc;
 		use hab_protocol::sessionsrv as proto_session;
     use hab_sessionsrv::data_store as sessionsrv_data_store;
     use hab_dbcache::data_store as dbcache_data_store;
     use hab_sessionsrv::config as session_srv_config;
     use hab_net::routing::{Broker, BrokerConn};
 
+		extern crate r2d2;
+		extern crate r2d2_redis;
+		extern crate redis;
+
+		use std::default::Default;
+		use std::thread;
+
+		use r2d2_redis::RedisConnectionManager;
+
+		use redis::Commands;
 
 //    fn test_creating_data() {
 
@@ -29,7 +51,8 @@ mod tests {
 
 #[test]
 fn create_account() {
-    let config = session_srv_config::Config::default();
+
+//    let config = session_srv_config::Config::default();
 
     let mut sc = proto_session::SessionCreate::new();
     sc.set_token(String::from("hail2theking"));
@@ -38,19 +61,22 @@ fn create_account() {
     sc.set_name(String::from("Bobo T. Clown"));
     sc.set_provider(proto_session::OAuthProvider::GitHub);
 
+    let config = Default::default();
 
-    let mut conn = Broker::connect().unwrap();
-    let session = conn.route::<proto_session::SessionCreate, proto_session::Session>(&sc);
+    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
+    let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
 
-println!("==================");
-println!("{:?}", session)
+		let pool1 = pool.clone();
+		let pool2 = pool.clone();
+		let pool3 = pool.clone();
 
-//    let sessionsrv_datastore = sessionsrv_data_store::DataStore
+		let ds = sessionsrv_data_store::DataStore {
+             pool: pool,
+             accounts: sessionsrv_data_store::AccountTable::new(pool1),
+             features: sessionsrv_data_store::FeatureFlagsIndices::new(pool2),
+             sessions: sessionsrv_data_store::SessionTable::new(pool3)};
 
-//    let ds = hab_sessionsrv::data_store::new();
-//    let pool :ConnectionPool = Pool::start(&config);
-//let pool :Arc<ConnectionPool> = Pool::start(&config);
-//    let account = sessionsrv_data_store::AccountTable::new(pool);
+//    let account = sessionsrv_data_store::AccountTable::new(Arc<pool>);
 
 
 //    let mut account = proto_session::Account::new();
