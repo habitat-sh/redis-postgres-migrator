@@ -7,6 +7,7 @@ authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
 bitflags = "*"
 env_logger = "*"
 hyper = "*"
+iron = "*"
 log = "*"
 protobuf = "*"
 redis = "*"

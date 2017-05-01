@@ -1,8 +1,18 @@
 extern crate redis_postgres_migrator;
+extern crate iron;
 extern crate habitat_builder_sessionsrv as hab_sessionsrv;
 extern crate habitat_builder_protocol as hab_protocol;
 extern crate habitat_builder_dbcache as hab_dbcache;
 extern crate habitat_net as hab_net;
+extern crate protobuf;
+
+use std::any::TypeId;
+use std::collections::HashMap;
+use hab_protocol::net::{NetOk, ErrCode, NetError};
+use protobuf::*;
+use hab_protocol::Routable;
+use hab_net::routing::{Broker, RouteResult};
+use iron::typemap::Key;
 
 fn main() {
     println!("bite me");
@@ -11,6 +21,63 @@ fn main() {
 pub fn redis_to_postgres(thing: String) {
 // redis_postgres_migrator::builder-sessionsrv::data_store::
     println!("{}", thing);
+}
+
+#[derive(Default)]
+pub struct TestableBroker {
+    message_map: HashMap<TypeId, Vec<u8>>,
+    error_map: HashMap<TypeId, NetError>,
+    cached_messages: HashMap<TypeId, Vec<u8>>,
+}
+
+impl TestableBroker {
+    pub fn setup<M: Routable, R: protobuf::MessageStatic>(&mut self, response: &R) {
+        let bytes = response.write_to_bytes().unwrap();
+        self.message_map.insert(TypeId::of::<M>(), bytes);
+    }
+
+    pub fn setup_error<M: Routable>(&mut self, error: NetError) {
+        self.error_map.insert(TypeId::of::<M>(), error);
+    }
+
+    pub fn routed_messages(&self) -> RoutedMessages {
+        RoutedMessages(self.cached_messages.clone())
+    }
+
+    pub fn route<M: Routable, R: protobuf::MessageStatic>(&mut self, msg: &M) -> RouteResult<R> {
+        let bytes = msg.write_to_bytes().unwrap();
+        self.cached_messages.insert(TypeId::of::<M>(), bytes);
+        let msg_type = &TypeId::of::<M>();
+        match self.message_map.get(msg_type) {
+            Some(message) => Ok(parse_from_bytes::<R>(message).unwrap()),
+            None => {
+                match self.error_map.get(msg_type) {
+                    Some(error) => Err(error.clone()),
+                    None => panic!("Unable to find message of given type"),
+                }
+            }
+        }
+    }
+}
+
+pub struct RoutedMessages(HashMap<TypeId, Vec<u8>>);
+
+
+impl Key for TestableBroker {
+    type Value = Self;
+}
+
+impl RoutedMessages {
+    pub fn get<M: Routable>(&self) -> Result<M> {
+        let msg_type = &TypeId::of::<M>();
+        match self.0.get(msg_type) {
+            Some(msg) => {
+                Ok(parse_from_bytes::<M>(msg).expect(&format!("Unable to parse {:?} message",
+                                                              msg_type)))
+            }
+            None => Err(Error::MessageTypeNotFound),
+        }
+    }
 }
 
 #[cfg(test)]
