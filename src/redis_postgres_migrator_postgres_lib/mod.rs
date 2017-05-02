@@ -1,5 +1,3 @@
-//use hab_sessionsrv as hab_sessionsrv;
-
 pub fn create_session(token: String, extern_id: u64, email: String, name: String) -> protocol::sessionsrv::SessionCreate {
     let mut sc = protocol::sessionsrv::SessionCreate::new();
     sc.set_token(token);
