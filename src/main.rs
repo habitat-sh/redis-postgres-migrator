@@ -67,14 +67,13 @@ mod tests {
     fn test_data_transfer() {
         let account = create_account();
 
-
 				let config = Default::default();
 				let manager = RedisConnectionManager::new("redis://localhost").unwrap();
 				let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
 
 				let account_table = sessionsrv_data_store::AccountTable::new(pool);
-        let found_account = sessionsrv_data_store::AccountTable::find_by_username(&account_table, account.get_name());
+        let found_account = sessionsrv_data_store::AccountTable::find_by_username(&account_table, account.get_name()).unwrap();
 
-        //assert_eq!(account.get_id(), found_account.get_id());
+        assert_eq!(account.get_id(), found_account.get_id());
     }
 }
