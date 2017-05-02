@@ -1,17 +1,21 @@
 extern crate r2d2;
 extern crate r2d2_redis;
 extern crate redis;
+extern crate habitat_builder_dbcache as dbcache;
+extern crate habitat_builder_protocol as protocol;
+extern crate habitat_core as hab_core;
+extern crate habitat_net as hab_net;
+extern crate habitat_builder_sessionsrv as hab_sessionsrv;
+extern crate hyper;
+extern crate log;
+extern crate protobuf;
+extern crate rustc_serialize;
+extern crate time;
+extern crate toml;
+extern crate zmq;
 
 use std::ops::Deref;
 use std::sync::Arc;
-
-use dbcache;
-use dbcache::data_store::*;
-use hab_net;
-use hab_sessionsrv;
-use hab_sessionsrv::data_store::*;
-use protocol::sessionsrv;
-
 
 use self::r2d2_redis::RedisConnectionManager;
 
@@ -19,11 +23,11 @@ use self::r2d2_redis::RedisConnectionManager;
 mod tests {
 //    use super::*;
     use std::sync::Arc;
-		use protocol::sessionsrv as proto_session;
-    use hab_sessionsrv::data_store as sessionsrv_data_store;
-    use dbcache::data_store as dbcache_data_store;
-    use hab_sessionsrv::config as session_srv_config;
-    use hab_net::routing::{Broker, BrokerConn};
+		use redis_data_store::protocol::sessionsrv as proto_session;
+    use redis_data_store::hab_sessionsrv::data_store as sessionsrv_data_store;
+    use redis_data_store::dbcache::data_store as dbcache_data_store;
+    use redis_data_store::hab_sessionsrv::config as session_srv_config;
+    use redis_data_store::hab_net::routing::{Broker, BrokerConn};
 
 		extern crate r2d2;
 		extern crate r2d2_redis;
@@ -34,7 +38,7 @@ mod tests {
 
 		use self::r2d2_redis::RedisConnectionManager;
 
-		use redis::Commands;
+		use self::redis::Commands;
 
     fn create_account() -> proto_session::Account {
 				let mut sc = proto_session::SessionCreate::new();
