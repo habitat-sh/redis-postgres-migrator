@@ -19,17 +19,17 @@ use std::sync::Arc;
 
 use self::r2d2_redis::RedisConnectionManager;
 
-fn create_session(token: String, extern_id: i64, email: String, name: String) -> protocol::sessionsrv::SessionCreate {
+pub fn create_session(token: String, extern_id: u64, email: String, name: String) -> protocol::sessionsrv::SessionCreate {
     let mut sc = protocol::sessionsrv::SessionCreate::new();
-    sc.set_token(String::from("hail2theking"));
-    sc.set_extern_id(64);
-    sc.set_email(String::from("bobo@chef.io"));
-    sc.set_name(String::from("Bobo T. Clown"));
+    sc.set_token(token);
+    sc.set_extern_id(extern_id);
+    sc.set_email(email);
+    sc.set_name(String::from(name));
     sc.set_provider(protocol::sessionsrv::OAuthProvider::GitHub);
     sc
 }
 
-fn create_account(session: protocol::sessionsrv::SessionCreate) -> protocol::sessionsrv::Account {
+pub fn create_account(session: protocol::sessionsrv::SessionCreate) -> protocol::sessionsrv::Account {
     let config = Default::default();
     let manager = RedisConnectionManager::new("redis://localhost").unwrap();
     let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
@@ -39,31 +39,11 @@ fn create_account(session: protocol::sessionsrv::SessionCreate) -> protocol::ses
     account
 }
 
-fn find_account(user_name: &str) -> protocol::sessionsrv::Account {
+pub fn find_account(user_name: &str) -> protocol::sessionsrv::Account {
     let config = Default::default();
     let manager = RedisConnectionManager::new("redis://localhost").unwrap();
     let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
 	  let account_table = hab_sessionsrv::data_store::AccountTable::new(pool);
     let account = hab_sessionsrv::data_store::AccountTable::find_by_username(&account_table, user_name).unwrap();
     account
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_data_transfer() {
-        let session = create_session(
-                      String::from("hail2theking"),
-                      64,
-                      String::from("bobo@chef.io"),
-                      String::from("Bobo T. Clown"));
-
-
-        let account = create_account(session);
-        let found_account = find_account(account.get_name());
-
-        assert_eq!(account.get_id(), found_account.get_id());
-    }
 }
