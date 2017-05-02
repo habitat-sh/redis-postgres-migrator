@@ -45,33 +45,36 @@ mod tests {
 
 		use redis::Commands;
 
-//    fn test_creating_data() {
+    fn create_account() -> proto_session::Account {
+				let mut sc = proto_session::SessionCreate::new();
+				sc.set_token(String::from("hail2theking"));
+				sc.set_extern_id(64);
+				sc.set_email(String::from("bobo@chef.io"));
+				sc.set_name(String::from("Bobo T. Clown"));
+				sc.set_provider(proto_session::OAuthProvider::GitHub);
 
-//    }
+				let config = Default::default();
+				let manager = RedisConnectionManager::new("redis://localhost").unwrap();
+				let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
 
-#[test]
-fn create_account() {
-    let mut sc = proto_session::SessionCreate::new();
-    sc.set_token(String::from("hail2theking"));
-    sc.set_extern_id(64);
-    sc.set_email(String::from("bobo@chef.io"));
-    sc.set_name(String::from("Bobo T. Clown"));
-    sc.set_provider(proto_session::OAuthProvider::GitHub);
+				let account_table = sessionsrv_data_store::AccountTable::new(pool);
+				let account = sessionsrv_data_store::AccountTable::find_or_create(&account_table, &sc).unwrap();
+        account
 
-    let config = Default::default();
-    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
-    let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
+    }
 
-		let pool1 = pool.clone();
-
-		let account_table = sessionsrv_data_store::AccountTable::new(pool1);
-		let account = sessionsrv_data_store::AccountTable::find_or_create(&account_table, &sc);
-
-    println!("{:?}", account);
-}
+    #[test]
+    fn test_data_transfer() {
+        let account = create_account();
 
 
-//    fn test_data_transfer() {
-//        redis_to_postgres("Bite me!".to_string())
-//   }
+				let config = Default::default();
+				let manager = RedisConnectionManager::new("redis://localhost").unwrap();
+				let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
+
+				let account_table = sessionsrv_data_store::AccountTable::new(pool);
+        let found_account = sessionsrv_data_store::AccountTable::find_by_username(&account_table, account.get_name());
+
+        //assert_eq!(account.get_id(), found_account.get_id());
+    }
 }
