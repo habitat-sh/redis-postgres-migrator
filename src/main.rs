@@ -70,13 +70,14 @@ fn create_account() {
 		let pool2 = pool.clone();
 		let pool3 = pool.clone();
 
-		let ds = sessionsrv_data_store::DataStore {
-             pool: pool,
-             accounts: sessionsrv_data_store::AccountTable::new(pool1),
-             features: sessionsrv_data_store::FeatureFlagsIndices::new(pool2),
-             sessions: sessionsrv_data_store::SessionTable::new(pool3)};
+//		let ds = sessionsrv_data_store::DataStore {
+//             pool: pool,
+//             accounts: sessionsrv_data_store::AccountTable::new(pool1),
+//             features: sessionsrv_data_store::FeatureFlagsIndices::new(pool2),
+//             sessions: sessionsrv_data_store::SessionTable::new(pool3)};
 
-//    let account = sessionsrv_data_store::AccountTable::new(Arc<pool>);
+//    let session = ds.find_or_create_account_via_session(&sc, true, false, false)
+//        .expect("Should create account");
 
 
 //    let mut account = proto_session::Account::new();
@@ -99,6 +100,10 @@ fn create_account() {
  //   assert_eq!(session.get_id(), session2.get_id());
   //  assert_eq!(session.get_email(), session2.get_email());
    // assert_eq!(session.get_name(), session2.get_name());
+
+//let session = sessionsrv_data_store::SessionTable::new(pool1);
+let account_table = sessionsrv_data_store::AccountTable::new(pool1);
+let account = sessionsrv_data_store::AccountTable::find_or_create(&account_table, &sc);
 }
 
 
