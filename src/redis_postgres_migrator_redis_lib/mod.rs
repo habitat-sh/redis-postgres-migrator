@@ -1,21 +1,7 @@
-extern crate r2d2;
-extern crate r2d2_redis;
-extern crate redis;
-extern crate habitat_builder_dbcache as dbcache;
-extern crate habitat_builder_protocol as protocol;
-extern crate habitat_core as hab_core;
-extern crate habitat_net as hab_net;
-extern crate habitat_builder_sessionsrv as hab_sessionsrv;
-extern crate hyper;
-extern crate log;
-extern crate protobuf;
-extern crate rustc_serialize;
-extern crate time;
-extern crate toml;
-extern crate zmq;
-
 use std::ops::Deref;
 use std::sync::Arc;
+use habitat_builder_sessionsrv as hab_sessionsrv;
+use protocol as protocol;
 
 use self::r2d2_redis::RedisConnectionManager;
 

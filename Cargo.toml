@@ -3,34 +3,7 @@ name = "redis-postgres-migrator"
 version = "0.1.0"
 authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
 
-[dependencies]
-bitflags = "*"
-env_logger = "*"
-hyper = "*"
-log = "*"
-protobuf = "*"
-r2d2 = "*"
-r2d2_redis = "*"
-redis = "*"
-rustc-serialize = "*"
-time = "*"
-toml = "0.1.29"
+[dependencies.redis_postgres_migrator_redis_lib]
+path = "./src/redis_postgres_migrator_redis_lib/"
 
-[dependencies.habitat_builder_dbcache]
-path = "./src/redis_data_store/builder-dbcache"
 
-[dependencies.habitat_builder_protocol]
-path = "./src/redis_data_store/builder-protocol"
-
-[dependencies.habitat_core]
-path = "./src/redis_data_store/core"
-
-[dependencies.habitat_builder_sessionsrv]
-path = "./src/redis_data_store/builder-sessionsrv"
-
-[dependencies.habitat_net]
-path = "./src/redis_data_store/net"
-
-[dependencies.zmq]
-git = "https://github.com/erickt/rust-zmq"
-branch = "release/v0.8"

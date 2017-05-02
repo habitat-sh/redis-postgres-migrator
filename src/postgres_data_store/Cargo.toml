@@ -1,0 +1,23 @@
+[package]
+name = "redis-postgres-migrator-postgres-lib"
+version = "0.1.0"
+authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
+
+[dependencies]
+
+[dependencies.habitat_builder_sessionsrv]
+path = "./builder-sessionsrv"
+
+[dependencies.habitat_builder_protocol]
+path = "./builder-protocol"
+
+[dependencies.habitat_core]
+path = "./core"
+
+[dependencies.habitat_net]
+path = "./net"
+
+
+
+
+

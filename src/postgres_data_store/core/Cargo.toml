@@ -1,0 +1,44 @@
+[package]
+name = "habitat_core"
+version = "0.0.0"
+authors = ["Adam Jacob <adam@chef.io>", "Jamie Winsor <reset@chef.io>", "Fletcher Nichol <fnichol@chef.io>", "Joshua Timberman <joshua@chef.io>", "Dave Parfitt <dparfitt@chef.io>", "Steven Murawski <smurawski@chef.io>"]
+workspace = "../../"
+build = "build.rs"
+
+[build-dependencies]
+gcc = "0.3"
+
+[dependencies]
+base64 = "*"
+errno = "*"
+hex = "*"
+lazy_static = "*"
+libarchive = "*"
+libc = "*"
+libsodium-sys = "*"
+log = "*"
+regex = "*"
+serde = "*"
+serde_derive = "*"
+serde_json = "*"
+sodiumoxide = "*"
+time = "*"
+toml = { version = "*", features = ["serde"], default-features = false }
+url = "*"
+
+[target.'cfg(not(windows))'.dependencies]
+users = "*"
+
+[target.'cfg(windows)'.dependencies.habitat_win_users]
+path = "../win-users"
+
+[target.'cfg(windows)'.dependencies]
+kernel32-sys = "*"
+winapi = "*"
+
+[dev-dependencies]
+hyper = "*"
+tempdir = "*"
+
+[features]
+functional = []
