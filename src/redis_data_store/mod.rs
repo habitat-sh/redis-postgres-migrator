@@ -44,30 +44,13 @@ fn find_account(user_name: &str) -> protocol::sessionsrv::Account {
     let manager = RedisConnectionManager::new("redis://localhost").unwrap();
     let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
 	  let account_table = hab_sessionsrv::data_store::AccountTable::new(pool);
-    let found_account = hab_sessionsrv::data_store::AccountTable::find_by_username(&account_table, user_name).unwrap();
-    found_account
+    let account = hab_sessionsrv::data_store::AccountTable::find_by_username(&account_table, user_name).unwrap();
+    account
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::sync::Arc;
-		use redis_data_store::protocol::sessionsrv as proto_session;
-    use redis_data_store::hab_sessionsrv::data_store as sessionsrv_data_store;
-    use redis_data_store::dbcache::data_store as dbcache_data_store;
-    use redis_data_store::hab_sessionsrv::config as session_srv_config;
-    use redis_data_store::hab_net::routing::{Broker, BrokerConn};
-
-		extern crate r2d2;
-		extern crate r2d2_redis;
-		extern crate redis;
-
-		use std::default::Default;
-		use std::thread;
-
-		use self::r2d2_redis::RedisConnectionManager;
-
-		use self::redis::Commands;
 
     #[test]
     fn test_data_transfer() {
