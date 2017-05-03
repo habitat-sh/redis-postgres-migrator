@@ -43,6 +43,7 @@ mod tests {
             String::from("bobo@chef.io"),
             String::from("Bobo T. Clown"),
         );
+println!("{:?}", session);
 
         let account = postgres_lib::create_account(ds, session);
 println!("{:?}", account);
