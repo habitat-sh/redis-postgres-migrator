@@ -95,4 +95,21 @@ mod tests {
         let postgres_account = postgres_lib::get_account(ds3, redis_account.get_name()).unwrap();
         assert_eq!(redis_account.get_name(), postgres_account.get_name());
     }
+
+    #[test]
+    fn test_redis_account_list() {
+
+         // Create account in redis
+         let session = redis_lib::create_session(
+                          String::from("scopuli"),
+                          64,
+                          String::from("julie.mao@chef.io"),
+                          String::from("Julie Mao"));
+
+
+         let redis_account = redis_lib::create_account(session);
+
+         let all_accounts = redis_lib::list_accounts();
+ //        println!("{:?}", all_accounts);
+    }
 }

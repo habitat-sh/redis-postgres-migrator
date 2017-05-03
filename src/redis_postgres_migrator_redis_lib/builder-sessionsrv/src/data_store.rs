@@ -23,6 +23,7 @@ use redis::{self, Commands, PipelineCommands};
 use config::Config;
 use error::Result;
 
+#[derive(Debug)]
 pub struct DataStore {
     pub pool: Arc<ConnectionPool>,
     pub accounts: AccountTable,
@@ -49,6 +50,24 @@ impl Pool for DataStore {
     }
 }
 
+impl DataStore {
+    pub fn new(pool: Arc<ConnectionPool>) -> Self {
+        let pool1 = pool.clone();
+        let pool2 = pool.clone();
+        let pool3 = pool.clone();
+        let accounts = AccountTable::new(pool1);
+        let sessions = SessionTable::new(pool2);
+        let features = FeatureFlagsIndices::new(pool3);
+        DataStore {
+            pool: pool,
+            accounts: accounts,
+            features: features,
+            sessions: sessions,
+        }
+    }
+}
+
+#[derive(Debug)]
 pub struct AccountTable {
     pool: Arc<ConnectionPool>,
     github: GitHub2AccountIdx,
@@ -113,6 +132,7 @@ impl InstaSet for AccountTable {
     }
 }
 
+#[derive(Debug)]
 pub struct FeatureFlagsIndices {
     pool: Arc<ConnectionPool>,
 }
@@ -173,6 +193,7 @@ impl FeatureFlagsIndices {
     }
 }
 
+#[derive(Debug)]
 pub struct SessionTable {
     pool: Arc<ConnectionPool>,
 }
@@ -201,6 +222,7 @@ impl ExpiringSet for SessionTable {
     }
 }
 
+#[derive(Debug)]
 struct GitHub2AccountIdx {
     pool: Arc<ConnectionPool>,
 }
@@ -226,6 +248,7 @@ impl IndexSet for GitHub2AccountIdx {
     type Value = u64;
 }
 
+#[derive(Debug)]
 struct GitHubUser2AccountIdx {
     pool: Arc<ConnectionPool>,
 }

@@ -28,6 +28,17 @@ pub fn create_account(session: protocol::sessionsrv::SessionCreate) -> protocol:
     account
 }
 
+pub fn list_accounts() {
+    let config = Default::default();
+    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
+    let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
+
+//	  let account_table = hab_sessionsrv::data_store::AccountTable::new(pool);
+//    println!("{:?}", account_table);
+//    let ds = hab_sessionsrv::data_store::DataStore::new(pool);
+//    println!("{:?}", ds.accounts);
+}
+
 pub fn find_account(user_name: &str) -> protocol::sessionsrv::Account {
     let config = Default::default();
     let manager = RedisConnectionManager::new("redis://localhost").unwrap();

@@ -75,6 +75,7 @@ impl Dispatcher for Worker {
                 -> Result<()> {
         match message.message_id() {
             "AccountGet" => handlers::account_get(message, sock, state),
+            "AccountList" => handlers::account_list(message, sock, state),
             "AccountSearch" => handlers::account_search(message, sock, state),
             "GrantFlagToTeam" => handlers::grant_flag(message, sock, state),
             "ListFlagGrants" => handlers::grant_list(message, sock, state),

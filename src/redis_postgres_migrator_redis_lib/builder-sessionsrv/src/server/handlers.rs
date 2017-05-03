@@ -42,6 +42,28 @@ pub fn account_get(req: &mut Envelope,
     Ok(())
 }
 
+pub fn account_list(req: &mut Envelope,
+                    sock: &mut zmq::Socket,
+                    state: &mut ServerState)
+                    -> Result<()> {
+    let msg: proto::AccountListRequest = try!(req.parse_msg());
+ //   state.datastore.accounts;
+//    match state.datastore.accounts.find_by_username(&msg.get_name().to_string()) {
+//        Ok(account) => try!(req.reply_complete(sock, &account)),
+//        Err(dbcache::Error::EntityNotFound) => {
+//            let err = net::err(ErrCode::ENTITY_NOT_FOUND, "ss:account-get:0");
+//            try!(req.reply_complete(sock, &err));
+//        }
+//        Err(e) => {
+//            error!("{}", e);
+//            let err = net::err(ErrCode::DATA_STORE, "ss:account-get:1");
+//            try!(req.reply_complete(sock, &err));
+//        }
+//    }
+    Ok(())
+}
+
+
 pub fn account_search(req: &mut Envelope,
                       sock: &mut zmq::Socket,
                       state: &mut ServerState)
