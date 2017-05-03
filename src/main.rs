@@ -15,6 +15,8 @@ pub fn redis_to_postgres(thing: String) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    //use redis_lib::hab_sessionsrv::data_store::DataStore as sessionsrv_data_store;
+
 
     #[test]
     fn test_redis_account_create() {
@@ -33,6 +35,8 @@ mod tests {
 
     #[test]
     fn test_postgres_account_create() {
+        let ds = postgres_lib::create_test_data_store();
+
         let session = postgres_lib::create_session(
             String::from("hail2theking"),
             64,
@@ -40,6 +44,7 @@ mod tests {
             String::from("Bobo T. Clown"),
         );
 
-        let account = postgres_lib::create_account(session);
+        let account = postgres_lib::create_account(ds, session);
+println!("{:?}", account);
     }
 }
