@@ -494,6 +494,319 @@ impl ::std::fmt::Debug for AccountGet {
 }
 
 #[derive(Clone,Default)]
+pub struct AccountListRequest {
+    // special fields
+    unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
+}
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for AccountListRequest {}
+
+impl AccountListRequest {
+    pub fn new() -> AccountListRequest {
+        ::std::default::Default::default()
+    }
+
+    pub fn default_instance() -> &'static AccountListRequest {
+        static mut instance: ::protobuf::lazy::Lazy<AccountListRequest> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const AccountListRequest,
+        };
+        unsafe {
+            instance.get(|| {
+                AccountListRequest {
+                    unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
+                }
+            })
+        }
+    }
+}
+
+impl ::protobuf::Message for AccountListRequest {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !try!(is.eof()) {
+            let (field_number, wire_type) = try!(is.read_tag_unpack());
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    };
+                    let tmp = try!(is.read_uint64());
+                },
+                _ => {
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<AccountListRequest>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for AccountListRequest {
+    fn new() -> AccountListRequest {
+        AccountListRequest::new()
+    }
+
+    fn descriptor_static(_: ::std::option::Option<AccountListRequest>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                ::protobuf::reflect::MessageDescriptor::new::<AccountListRequest>(
+                    "AccountListRequest",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+}
+
+impl ::protobuf::Clear for AccountListRequest {
+    fn clear(&mut self) {
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::cmp::PartialEq for AccountListRequest {
+    fn eq(&self, other: &AccountListRequest) -> bool {
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
+impl ::std::fmt::Debug for AccountListRequest {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+#[derive(Clone,Default)]
+pub struct AccountListResponse {
+    // message fields
+    accounts: ::protobuf::RepeatedField<::std::string::String>,
+    // special fields
+    unknown_fields: ::protobuf::UnknownFields,
+    cached_size: ::std::cell::Cell<u32>,
+}
+
+// see codegen.rs for the explanation why impl Sync explicitly
+unsafe impl ::std::marker::Sync for AccountListResponse {}
+
+impl AccountListResponse {
+    pub fn new() -> AccountListResponse {
+        ::std::default::Default::default()
+    }
+
+    pub fn default_instance() -> &'static AccountListResponse {
+        static mut instance: ::protobuf::lazy::Lazy<AccountListResponse> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const AccountListResponse,
+        };
+        unsafe {
+            instance.get(|| {
+                AccountListResponse {
+                    accounts: ::protobuf::RepeatedField::new(),
+                    unknown_fields: ::protobuf::UnknownFields::new(),
+                    cached_size: ::std::cell::Cell::new(0),
+                }
+            })
+        }
+    }
+
+    // required uint64 origin_id = 1;
+
+    // repeated string members = 2;
+
+    pub fn clear_members(&mut self) {
+        self.accounts.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_accounts(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+        self.accounts = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_accounts(&mut self) -> &mut ::protobuf::RepeatedField<::std::string::String> {
+        &mut self.accounts
+    }
+
+    // Take field
+    pub fn take_accounts(&mut self) -> ::protobuf::RepeatedField<::std::string::String> {
+        ::std::mem::replace(&mut self.accounts, ::protobuf::RepeatedField::new())
+    }
+
+    pub fn get_accounts(&self) -> &[::std::string::String] {
+        &self.accounts
+    }
+}
+
+impl ::protobuf::Message for AccountListResponse {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !try!(is.eof()) {
+            let (field_number, wire_type) = try!(is.read_tag_unpack());
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    };
+                    let tmp = try!(is.read_uint64());
+                },
+                2 => {
+                    try!(::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.accounts));
+                },
+                _ => {
+                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        for value in &self.accounts {
+            my_size += ::protobuf::rt::string_size(2, &value);
+        };
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        for v in &self.accounts {
+            try!(os.write_string(2, &v));
+        };
+        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn type_id(&self) -> ::std::any::TypeId {
+        ::std::any::TypeId::of::<AccountListResponse>()
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::MessageStatic::descriptor_static(None::<Self>)
+    }
+}
+
+impl ::protobuf::MessageStatic for AccountListResponse {
+    fn new() -> AccountListResponse {
+        AccountListResponse::new()
+    }
+
+    fn descriptor_static(_: ::std::option::Option<AccountListResponse>) -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_repeated_string_accessor(
+                    "accounts",
+                    AccountListResponse::get_accounts,
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<AccountListResponse>(
+                    "AccountListResponse",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+}
+
+impl ::protobuf::Clear for AccountListResponse {
+    fn clear(&mut self) {
+        self.clear_members();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::cmp::PartialEq for AccountListResponse {
+    fn eq(&self, other: &AccountListResponse) -> bool {
+        self.accounts == other.accounts &&
+        self.unknown_fields == other.unknown_fields
+    }
+}
+
+impl ::std::fmt::Debug for AccountListResponse {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+#[derive(Clone,Default)]
 pub struct AccountSearch {
     // message fields
     key: ::std::option::Option<AccountSearchKey>,

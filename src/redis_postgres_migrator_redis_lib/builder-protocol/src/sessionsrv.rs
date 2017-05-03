@@ -94,6 +94,14 @@ impl Routable for AccountGet {
     }
 }
 
+//impl Routable for AccountListRequest {
+
+//}
+
+//impl Routable for AccountListResponse {
+
+//}
+
 impl FromSearchPair for AccountSearch {
     fn from_search_pair<K: AsRef<str>, V: Into<String>>(key: K, value: V) -> ProtocolResult<Self> {
         let key = try!(AccountSearchKey::from_str(key.as_ref()));
