@@ -704,6 +704,7 @@ dependencies = [
 name = "redis_postgres_migrator_postgres_lib"
 version = "0.1.0"
 dependencies = [
+ "habitat_builder_db 0.0.0",
  "habitat_builder_protocol 0.0.0",
  "habitat_builder_sessionsrv 0.0.0",
  "habitat_core 0.0.0",

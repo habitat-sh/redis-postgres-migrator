@@ -1,5 +1,8 @@
 extern crate redis_postgres_migrator_redis_lib;
+extern crate redis_postgres_migrator_postgres_lib;
+
 use redis_postgres_migrator_redis_lib as redis_lib;
+use redis_postgres_migrator_postgres_lib as postgres_lib;
 
 fn main() {
     println!("bite me");
@@ -30,14 +33,13 @@ mod tests {
 
     #[test]
     fn test_postgres_account_create() {
-//        let session = postgres_data_store::create_session(
-//            String::from("hail2theking"),
-//            64,
-//            String::from("bobo@chef.io"),
-//            String::from("Bobo T. Clown"),
-//        );
+        let session = postgres_lib::create_session(
+            String::from("hail2theking"),
+            64,
+            String::from("bobo@chef.io"),
+            String::from("Bobo T. Clown"),
+        );
 
-        //let account = redis_postgres_migrator::postgres_data_store::create_account()
-
+        let account = postgres_lib::create_account(session);
     }
 }
