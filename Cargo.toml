@@ -9,5 +9,10 @@ path = "./src/redis_postgres_migrator_redis_lib/"
 [dependencies.redis_postgres_migrator_postgres_lib]
 path = "./src/redis_postgres_migrator_postgres_lib/"
 
+[dependencies.habitat_builder_sessionsrv]
+path = "./src/redis_postgres_migrator_postgres_lib/builder-sessionsrv"
+
+
+
 
 
