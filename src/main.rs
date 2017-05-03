@@ -14,6 +14,8 @@ pub fn redis_to_postgres(data_store :session_srv::data_store::DataStore, user_na
     let redis_account = redis_lib::find_account(user_name);
     let config = session_srv::config::Config::default();
 
+println!("{:?}", redis_account);
+
     let session = postgres_lib::create_session(
         "bite me".to_string(),
         redis_account.get_id(),
@@ -91,6 +93,6 @@ mod tests {
 
         // check that account is now in postgres
         let postgres_account = postgres_lib::get_account(ds3, redis_account.get_name()).unwrap();
-        assert_eq!(redis_account.get_id(), postgres_account.get_id());
+        assert_eq!(redis_account.get_name(), postgres_account.get_name());
     }
 }
