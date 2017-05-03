@@ -36,6 +36,8 @@ mod tests {
     #[test]
     fn test_postgres_account_create() {
         let ds = postgres_lib::create_test_data_store();
+        let ds1 = ds.clone();
+        let ds2 = ds.clone();
 
         let session = postgres_lib::create_session(
             String::from("hail2theking"),
@@ -43,9 +45,10 @@ mod tests {
             String::from("bobo@chef.io"),
             String::from("Bobo T. Clown"),
         );
-println!("{:?}", session);
 
-        let account = postgres_lib::create_account(ds, session);
-println!("{:?}", account);
+        let account = postgres_lib::create_account(ds1, session);
+        let found_account = postgres_lib::get_account(ds2, account.get_name()).unwrap();
+
+        assert_eq!(account.get_id(), found_account.get_id());
     }
 }

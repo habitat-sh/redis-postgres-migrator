@@ -23,6 +23,13 @@ pub fn create_account(data_store: sessionsrv_data_store, session: protocol::sess
     account
 }
 
+pub fn get_account(data_store: sessionsrv_data_store, account_name: &str) -> std::option::Option<protocol::sessionsrv::Account> {
+    let mut ag = protocol::sessionsrv::AccountGet::new();
+    ag.set_name(account_name.to_string());
+    let account_get = data_store.get_account(&ag);
+    let account = account_get.unwrap();
+    account
+}
 
 pub fn create_test_data_store() -> sessionsrv_data_store {
     let ds = datastore_test!(sessionsrv_data_store);
