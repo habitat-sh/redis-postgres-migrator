@@ -1,6 +1,7 @@
 extern crate redis_postgres_migrator_redis_lib;
 extern crate redis_postgres_migrator_postgres_lib;
 extern crate habitat_builder_sessionsrv;
+extern crate redis_extraction;
 
 use redis_postgres_migrator_redis_lib as redis_lib;
 use redis_postgres_migrator_postgres_lib as postgres_lib;
@@ -10,11 +11,13 @@ fn main() {
     println!("bite me");
 }
 
-pub fn redis_to_postgres(data_store :session_srv::data_store::DataStore, user_name: &str) {
+pub fn redis_to_postgres() {
+    redis_extraction::extract_accounts();
+}
+
+pub fn redis_to_postgres_account(data_store :session_srv::data_store::DataStore, user_name: &str) {
     let redis_account = redis_lib::find_account(user_name);
     let config = session_srv::config::Config::default();
-
-println!("{:?}", redis_account);
 
     let session = postgres_lib::create_session(
         "bite me".to_string(),
@@ -29,7 +32,6 @@ println!("{:?}", redis_account);
 #[cfg(test)]
 mod tests {
     use super::*;
-
 
     #[test]
     fn test_redis_account_create() {
@@ -89,7 +91,7 @@ mod tests {
 
 
         // transfer account to postgres
-        redis_to_postgres(ds2, redis_account.get_name());
+        redis_to_postgres_account(ds2, redis_account.get_name());
 
         // check that account is now in postgres
         let postgres_account = postgres_lib::get_account(ds3, redis_account.get_name()).unwrap();
@@ -97,8 +99,7 @@ mod tests {
     }
 
     #[test]
-    fn test_redis_account_list() {
-
+    fn test_redis_to_postgres_accounts() {
          // Create account in redis
          let session = redis_lib::create_session(
                           String::from("scopuli"),
@@ -109,7 +110,24 @@ mod tests {
 
          let redis_account = redis_lib::create_account(session);
 
-         let all_accounts = redis_lib::list_accounts();
- //        println!("{:?}", all_accounts);
+         // Set up postgres datastore
+				 let ds = postgres_lib::create_test_data_store();
+				 let ds1 = ds.clone();
+				 let ds2 = ds.clone();
+				 let ds3 = ds.clone();
+
+         // Check that account does not exist in postgres
+         let not_found = postgres_lib::get_account(ds1, redis_account.get_name());
+         assert_eq!(not_found, None);
+
+
+        // transfer account to postgres
+//        redis_to_postgres(redis_client("redis:://127.0.0.1/"));
+        redis_to_postgres();
+
+        // check that account is now in postgres
+//        let postgres_account = postgres_lib::get_account(ds3, redis_account.get_name()).unwrap();
+//        assert_eq!(redis_account.get_name(), postgres_account.get_name());
     }
+
 }

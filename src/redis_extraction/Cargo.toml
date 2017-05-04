@@ -1,0 +1,7 @@
+[package]
+name = "redis_extraction"
+version = "0.1.0"
+authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
+
+[dependencies]
+redis = "0.5.3"
