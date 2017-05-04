@@ -3,6 +3,9 @@ name = "redis-postgres-migrator"
 version = "0.1.0"
 authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
 
+[dependencies]
+regex = "*"
+
 [dependencies.redis_extraction]
 path = "./src/redis_extraction"
 

@@ -2,20 +2,35 @@ extern crate redis_postgres_migrator_redis_lib;
 extern crate redis_postgres_migrator_postgres_lib;
 extern crate habitat_builder_sessionsrv;
 extern crate redis_extraction;
+extern crate regex;
 
 use redis_postgres_migrator_redis_lib as redis_lib;
 use redis_postgres_migrator_postgres_lib as postgres_lib;
 use habitat_builder_sessionsrv as session_srv;
+use regex::Regex;
 
 fn main() {
     println!("bite me");
 }
 
+//let re = Regex::new(r"(\d{4})-(\d{2})-(\d{2})").unwrap();
+//let text = "2012-03-14, 2013-01-01 and 2014-07-05";
+//for cap in re.captures_iter(text) {
+//    println!("Month: {} Day: {} Year: {}", &cap[2], &cap[3], &cap[1]);
+//}
+// Output:
+// Month: 03 Day: 14 Year: 2012
+// Month: 01 Day: 01 Year: 2013
+// Month: 07 Day: 05 Year: 2014
+
 pub fn redis_to_postgres() {
     let accounts = redis_extraction::extract_accounts();
+
+    let re = Regex::new(r":(\d+)").unwrap();
     for x in accounts {
-        println!("======================");
-        println!("{}", x);
+        for cap in re.captures_iter(&x) {
+            println!("{}", &cap[1]);
+        }
     }
 }
 
