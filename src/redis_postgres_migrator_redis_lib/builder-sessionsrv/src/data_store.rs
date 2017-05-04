@@ -112,6 +112,11 @@ impl AccountTable {
         let account_id = try!(self.user_to_account.find(&username.to_string()));
         self.find(&account_id)
     }
+
+    pub fn find_by_id(&self, id: u64) -> dbcache::Result<sessionsrv::Account> {
+        let account = self.find(&id);
+        account
+    }
 }
 
 impl Bucket for AccountTable {
