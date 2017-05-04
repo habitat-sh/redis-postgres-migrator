@@ -22,9 +22,8 @@ pub fn redis_to_postgres(data_store :session_srv::data_store::DataStore) {
 			let ds = data_store.clone();
       let account_id = &cap[1];
       let account = redis_lib::find_account_by_id(account_id.to_string());
-println!("here is the account {:?}", account);
 
-//			redis_to_postgres_account(ds, account_id.to_be());
+      redis_to_postgres_account(ds, account.get_id(), account.get_email().to_string(), account.get_name().to_string());
 		}
 	}
 }
@@ -123,23 +122,33 @@ mod tests {
 
   			 let redis_account = redis_lib::create_account(session);
 
+         let session2 = redis_lib::create_session(
+                          String::from("canterbury"),
+                          64,
+                          String::from("james.holden@chef.io"),
+                          String::from("James Holden"));
+
+  			 let redis_account2 = redis_lib::create_account(session2);
+
          // Set up postgres datastore
 				 let ds = postgres_lib::create_test_data_store();
-				 let ds1 = ds.clone();
-				 let ds2 = ds.clone();
-				 let ds3 = ds.clone();
 
          // Check that account does not exist in postgres
-         let not_found = postgres_lib::get_account(ds1, redis_account.get_name());
-         assert_eq!(not_found, None);
+         let not_found1 = postgres_lib::get_account(ds.clone(), redis_account.get_name());
+         let not_found2 = postgres_lib::get_account(ds.clone(), redis_account2.get_name());
 
+         assert_eq!(not_found1, None);
+         assert_eq!(not_found2, None);
 
         // transfer account to postgres
-        redis_to_postgres(ds2);
+        redis_to_postgres(ds.clone());
 
-        // check that account is now in postgres
-        let postgres_account = postgres_lib::get_account(ds3, redis_account.get_name()).unwrap();
+        // check that accounts are now in postgres
+        let postgres_account = postgres_lib::get_account(ds.clone(), redis_account.get_name()).unwrap();
         assert_eq!(redis_account.get_name(), postgres_account.get_name());
+
+        let postgres_account2 = postgres_lib::get_account(ds.clone(), redis_account2.get_name()).unwrap();
+        assert_eq!(redis_account2.get_name(), postgres_account2.get_name());
     }
 
 }
