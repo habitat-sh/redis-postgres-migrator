@@ -12,7 +12,8 @@ fn main() {
 }
 
 pub fn redis_to_postgres() {
-    redis_extraction::extract_accounts();
+    let accounts = redis_extraction::extract_accounts();
+println!("{:?}", accounts.unwrap());
 }
 
 pub fn redis_to_postgres_account(data_store :session_srv::data_store::DataStore, user_name: &str) {
