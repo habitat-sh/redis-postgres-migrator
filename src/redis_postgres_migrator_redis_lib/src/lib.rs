@@ -62,25 +62,12 @@ pub fn find_account_by_id(id: String) -> protocol::sessionsrv::Account {
 
     let account_search_key = protocol::sessionsrv::AccountSearchKey::Id;
     let mut account_search = protocol::sessionsrv::AccountSearch::new();
+
     account_search.set_key(account_search_key);
     account_search.set_value(id.clone());
-//let value: u64 = msg.take_value().parse().unwrap();
-let value: u64 = account_search.take_value().parse().unwrap();
-println!("here is the id {:?} and value {:?}", id, value);
-let account = ds.accounts.find(&value).unwrap();
 
-//println!("here is the account_search_key");
-//println!("{:?}", account_search_key);
-    //let account_by_id = ds.accounts.find(account_search_key);
-//    let account_by_id = ds.accounts.find(account_search_key);
-
-//println!("account_by_id {:?}", account_by_id);
-
-//    let account = account_get.unwrap();
-//    let account_table = AccountTable::new(pool2);
-//    let sc = protocol::sessionsrv::SessionCreate::new();
-//    sc.set_extern_id = id;
-//    let account = hab_sessionsrv::data_store::AccountTable::find_or_create(&account_table, &sc).unwrap();
+    let value: u64 = account_search.take_value().parse().unwrap();
+    let account = ds.accounts.find(&value).unwrap();
 
     account
 }
