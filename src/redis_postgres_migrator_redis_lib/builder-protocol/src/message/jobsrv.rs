@@ -9,6 +9,7 @@
 
 #![allow(box_pointers)]
 #![allow(dead_code)]
+#![allow(missing_docs)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
@@ -20,7 +21,7 @@
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
-#[derive(Clone,Default)]
+#[derive(PartialEq,Clone,Default)]
 pub struct Heartbeat {
     // message fields
     endpoint: ::protobuf::SingularField<::std::string::String>,
@@ -28,7 +29,7 @@ pub struct Heartbeat {
     state: ::std::option::Option<WorkerState>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -45,15 +46,7 @@ impl Heartbeat {
             ptr: 0 as *const Heartbeat,
         };
         unsafe {
-            instance.get(|| {
-                Heartbeat {
-                    endpoint: ::protobuf::SingularField::none(),
-                    os: ::std::option::Option::None,
-                    state: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(Heartbeat::new)
         }
     }
 
@@ -93,6 +86,14 @@ impl Heartbeat {
         }
     }
 
+    fn get_endpoint_for_reflect(&self) -> &::protobuf::SingularField<::std::string::String> {
+        &self.endpoint
+    }
+
+    fn mut_endpoint_for_reflect(&mut self) -> &mut ::protobuf::SingularField<::std::string::String> {
+        &mut self.endpoint
+    }
+
     // required .jobsrv.Os os = 2;
 
     pub fn clear_os(&mut self) {
@@ -110,6 +111,14 @@ impl Heartbeat {
 
     pub fn get_os(&self) -> Os {
         self.os.unwrap_or(Os::Linux)
+    }
+
+    fn get_os_for_reflect(&self) -> &::std::option::Option<Os> {
+        &self.os
+    }
+
+    fn mut_os_for_reflect(&mut self) -> &mut ::std::option::Option<Os> {
+        &mut self.os
     }
 
     // required .jobsrv.WorkerState state = 3;
@@ -130,6 +139,14 @@ impl Heartbeat {
     pub fn get_state(&self) -> WorkerState {
         self.state.unwrap_or(WorkerState::Ready)
     }
+
+    fn get_state_for_reflect(&self) -> &::std::option::Option<WorkerState> {
+        &self.state
+    }
+
+    fn mut_state_for_reflect(&mut self) -> &mut ::std::option::Option<WorkerState> {
+        &mut self.state
+    }
 }
 
 impl ::protobuf::Message for Heartbeat {
@@ -147,28 +164,28 @@ impl ::protobuf::Message for Heartbeat {
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !try!(is.eof()) {
-            let (field_number, wire_type) = try!(is.read_tag_unpack());
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    try!(::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.endpoint));
+                    ::protobuf::rt::read_singular_string_into(wire_type, is, &mut self.endpoint)?;
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     };
-                    let tmp = try!(is.read_enum());
+                    let tmp = is.read_enum()?;
                     self.os = ::std::option::Option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     };
-                    let tmp = try!(is.read_enum());
+                    let tmp = is.read_enum()?;
                     self.state = ::std::option::Option::Some(tmp);
                 },
                 _ => {
-                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -179,14 +196,14 @@ impl ::protobuf::Message for Heartbeat {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.endpoint {
-            my_size += ::protobuf::rt::string_size(1, &value);
+        if let Some(v) = self.endpoint.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
         };
-        for value in &self.os {
-            my_size += ::protobuf::rt::enum_size(2, *value);
+        if let Some(v) = self.os {
+            my_size += ::protobuf::rt::enum_size(2, v);
         };
-        for value in &self.state {
-            my_size += ::protobuf::rt::enum_size(3, *value);
+        if let Some(v) = self.state {
+            my_size += ::protobuf::rt::enum_size(3, v);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -195,15 +212,15 @@ impl ::protobuf::Message for Heartbeat {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.endpoint.as_ref() {
-            try!(os.write_string(1, &v));
+            os.write_string(1, &v)?;
         };
         if let Some(v) = self.os {
-            try!(os.write_enum(2, v.value()));
+            os.write_enum(2, v.value())?;
         };
         if let Some(v) = self.state {
-            try!(os.write_enum(3, v.value()));
+            os.write_enum(3, v.value())?;
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -219,12 +236,14 @@ impl ::protobuf::Message for Heartbeat {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<Heartbeat>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
+    }
+    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
+        self as &mut ::std::any::Any
+    }
+    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
+        self
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -245,20 +264,20 @@ impl ::protobuf::MessageStatic for Heartbeat {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_string_accessor(
+                fields.push(::protobuf::reflect::accessor::make_singular_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "endpoint",
-                    Heartbeat::has_endpoint,
-                    Heartbeat::get_endpoint,
+                    Heartbeat::get_endpoint_for_reflect,
+                    Heartbeat::mut_endpoint_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_enum_accessor(
+                fields.push(::protobuf::reflect::accessor::make_option_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Os>>(
                     "os",
-                    Heartbeat::has_os,
-                    Heartbeat::get_os,
+                    Heartbeat::get_os_for_reflect,
+                    Heartbeat::mut_os_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_enum_accessor(
+                fields.push(::protobuf::reflect::accessor::make_option_accessor::<_, ::protobuf::types::ProtobufTypeEnum<WorkerState>>(
                     "state",
-                    Heartbeat::has_state,
-                    Heartbeat::get_state,
+                    Heartbeat::get_state_for_reflect,
+                    Heartbeat::mut_state_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Heartbeat>(
                     "Heartbeat",
@@ -279,22 +298,19 @@ impl ::protobuf::Clear for Heartbeat {
     }
 }
 
-impl ::std::cmp::PartialEq for Heartbeat {
-    fn eq(&self, other: &Heartbeat) -> bool {
-        self.endpoint == other.endpoint &&
-        self.os == other.os &&
-        self.state == other.state &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for Heartbeat {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-#[derive(Clone,Default)]
+impl ::protobuf::reflect::ProtobufValue for Heartbeat {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
+#[derive(PartialEq,Clone,Default)]
 pub struct Job {
     // message fields
     id: ::std::option::Option<u64>,
@@ -303,7 +319,7 @@ pub struct Job {
     project: ::protobuf::SingularPtrField<super::vault::Project>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -320,16 +336,7 @@ impl Job {
             ptr: 0 as *const Job,
         };
         unsafe {
-            instance.get(|| {
-                Job {
-                    id: ::std::option::Option::None,
-                    owner_id: ::std::option::Option::None,
-                    state: ::std::option::Option::None,
-                    project: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(Job::new)
         }
     }
 
@@ -352,6 +359,14 @@ impl Job {
         self.id.unwrap_or(0)
     }
 
+    fn get_id_for_reflect(&self) -> &::std::option::Option<u64> {
+        &self.id
+    }
+
+    fn mut_id_for_reflect(&mut self) -> &mut ::std::option::Option<u64> {
+        &mut self.id
+    }
+
     // required uint64 owner_id = 2;
 
     pub fn clear_owner_id(&mut self) {
@@ -371,6 +386,14 @@ impl Job {
         self.owner_id.unwrap_or(0)
     }
 
+    fn get_owner_id_for_reflect(&self) -> &::std::option::Option<u64> {
+        &self.owner_id
+    }
+
+    fn mut_owner_id_for_reflect(&mut self) -> &mut ::std::option::Option<u64> {
+        &mut self.owner_id
+    }
+
     // required .jobsrv.JobState state = 3;
 
     pub fn clear_state(&mut self) {
@@ -388,6 +411,14 @@ impl Job {
 
     pub fn get_state(&self) -> JobState {
         self.state.unwrap_or(JobState::Pending)
+    }
+
+    fn get_state_for_reflect(&self) -> &::std::option::Option<JobState> {
+        &self.state
+    }
+
+    fn mut_state_for_reflect(&mut self) -> &mut ::std::option::Option<JobState> {
+        &mut self.state
     }
 
     // required .vault.Project project = 4;
@@ -422,6 +453,14 @@ impl Job {
     pub fn get_project(&self) -> &super::vault::Project {
         self.project.as_ref().unwrap_or_else(|| super::vault::Project::default_instance())
     }
+
+    fn get_project_for_reflect(&self) -> &::protobuf::SingularPtrField<super::vault::Project> {
+        &self.project
+    }
+
+    fn mut_project_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<super::vault::Project> {
+        &mut self.project
+    }
 }
 
 impl ::protobuf::Message for Job {
@@ -442,35 +481,35 @@ impl ::protobuf::Message for Job {
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !try!(is.eof()) {
-            let (field_number, wire_type) = try!(is.read_tag_unpack());
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     };
-                    let tmp = try!(is.read_uint64());
+                    let tmp = is.read_uint64()?;
                     self.id = ::std::option::Option::Some(tmp);
                 },
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     };
-                    let tmp = try!(is.read_uint64());
+                    let tmp = is.read_uint64()?;
                     self.owner_id = ::std::option::Option::Some(tmp);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     };
-                    let tmp = try!(is.read_enum());
+                    let tmp = is.read_enum()?;
                     self.state = ::std::option::Option::Some(tmp);
                 },
                 4 => {
-                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.project));
+                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.project)?;
                 },
                 _ => {
-                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -481,17 +520,17 @@ impl ::protobuf::Message for Job {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.id {
-            my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.id {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in &self.owner_id {
-            my_size += ::protobuf::rt::value_size(2, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.owner_id {
+            my_size += ::protobuf::rt::value_size(2, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in &self.state {
-            my_size += ::protobuf::rt::enum_size(3, *value);
+        if let Some(v) = self.state {
+            my_size += ::protobuf::rt::enum_size(3, v);
         };
-        for value in &self.project {
-            let len = value.compute_size();
+        if let Some(v) = self.project.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -501,20 +540,20 @@ impl ::protobuf::Message for Job {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.id {
-            try!(os.write_uint64(1, v));
+            os.write_uint64(1, v)?;
         };
         if let Some(v) = self.owner_id {
-            try!(os.write_uint64(2, v));
+            os.write_uint64(2, v)?;
         };
         if let Some(v) = self.state {
-            try!(os.write_enum(3, v.value()));
+            os.write_enum(3, v.value())?;
         };
         if let Some(v) = self.project.as_ref() {
-            try!(os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -530,12 +569,14 @@ impl ::protobuf::Message for Job {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<Job>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
+    }
+    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
+        self as &mut ::std::any::Any
+    }
+    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
+        self
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -556,25 +597,25 @@ impl ::protobuf::MessageStatic for Job {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_u64_accessor(
+                fields.push(::protobuf::reflect::accessor::make_option_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
                     "id",
-                    Job::has_id,
-                    Job::get_id,
+                    Job::get_id_for_reflect,
+                    Job::mut_id_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_u64_accessor(
+                fields.push(::protobuf::reflect::accessor::make_option_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
                     "owner_id",
-                    Job::has_owner_id,
-                    Job::get_owner_id,
+                    Job::get_owner_id_for_reflect,
+                    Job::mut_owner_id_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_enum_accessor(
+                fields.push(::protobuf::reflect::accessor::make_option_accessor::<_, ::protobuf::types::ProtobufTypeEnum<JobState>>(
                     "state",
-                    Job::has_state,
-                    Job::get_state,
+                    Job::get_state_for_reflect,
+                    Job::mut_state_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::vault::Project>>(
                     "project",
-                    Job::has_project,
-                    Job::get_project,
+                    Job::get_project_for_reflect,
+                    Job::mut_project_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Job>(
                     "Job",
@@ -596,29 +637,25 @@ impl ::protobuf::Clear for Job {
     }
 }
 
-impl ::std::cmp::PartialEq for Job {
-    fn eq(&self, other: &Job) -> bool {
-        self.id == other.id &&
-        self.owner_id == other.owner_id &&
-        self.state == other.state &&
-        self.project == other.project &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for Job {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-#[derive(Clone,Default)]
+impl ::protobuf::reflect::ProtobufValue for Job {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
+#[derive(PartialEq,Clone,Default)]
 pub struct JobGet {
     // message fields
     id: ::std::option::Option<u64>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -635,13 +672,7 @@ impl JobGet {
             ptr: 0 as *const JobGet,
         };
         unsafe {
-            instance.get(|| {
-                JobGet {
-                    id: ::std::option::Option::None,
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(JobGet::new)
         }
     }
 
@@ -663,6 +694,14 @@ impl JobGet {
     pub fn get_id(&self) -> u64 {
         self.id.unwrap_or(0)
     }
+
+    fn get_id_for_reflect(&self) -> &::std::option::Option<u64> {
+        &self.id
+    }
+
+    fn mut_id_for_reflect(&mut self) -> &mut ::std::option::Option<u64> {
+        &mut self.id
+    }
 }
 
 impl ::protobuf::Message for JobGet {
@@ -674,18 +713,18 @@ impl ::protobuf::Message for JobGet {
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !try!(is.eof()) {
-            let (field_number, wire_type) = try!(is.read_tag_unpack());
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     };
-                    let tmp = try!(is.read_uint64());
+                    let tmp = is.read_uint64()?;
                     self.id = ::std::option::Option::Some(tmp);
                 },
                 _ => {
-                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -696,8 +735,8 @@ impl ::protobuf::Message for JobGet {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.id {
-            my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.id {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -706,9 +745,9 @@ impl ::protobuf::Message for JobGet {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.id {
-            try!(os.write_uint64(1, v));
+            os.write_uint64(1, v)?;
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -724,12 +763,14 @@ impl ::protobuf::Message for JobGet {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<JobGet>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
+    }
+    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
+        self as &mut ::std::any::Any
+    }
+    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
+        self
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -750,10 +791,10 @@ impl ::protobuf::MessageStatic for JobGet {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_u64_accessor(
+                fields.push(::protobuf::reflect::accessor::make_option_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
                     "id",
-                    JobGet::has_id,
-                    JobGet::get_id,
+                    JobGet::get_id_for_reflect,
+                    JobGet::mut_id_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<JobGet>(
                     "JobGet",
@@ -772,27 +813,26 @@ impl ::protobuf::Clear for JobGet {
     }
 }
 
-impl ::std::cmp::PartialEq for JobGet {
-    fn eq(&self, other: &JobGet) -> bool {
-        self.id == other.id &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for JobGet {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-#[derive(Clone,Default)]
+impl ::protobuf::reflect::ProtobufValue for JobGet {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
+#[derive(PartialEq,Clone,Default)]
 pub struct JobSpec {
     // message fields
     owner_id: ::std::option::Option<u64>,
     project: ::protobuf::SingularPtrField<super::vault::Project>,
     // special fields
     unknown_fields: ::protobuf::UnknownFields,
-    cached_size: ::std::cell::Cell<u32>,
+    cached_size: ::protobuf::CachedSize,
 }
 
 // see codegen.rs for the explanation why impl Sync explicitly
@@ -809,14 +849,7 @@ impl JobSpec {
             ptr: 0 as *const JobSpec,
         };
         unsafe {
-            instance.get(|| {
-                JobSpec {
-                    owner_id: ::std::option::Option::None,
-                    project: ::protobuf::SingularPtrField::none(),
-                    unknown_fields: ::protobuf::UnknownFields::new(),
-                    cached_size: ::std::cell::Cell::new(0),
-                }
-            })
+            instance.get(JobSpec::new)
         }
     }
 
@@ -837,6 +870,14 @@ impl JobSpec {
 
     pub fn get_owner_id(&self) -> u64 {
         self.owner_id.unwrap_or(0)
+    }
+
+    fn get_owner_id_for_reflect(&self) -> &::std::option::Option<u64> {
+        &self.owner_id
+    }
+
+    fn mut_owner_id_for_reflect(&mut self) -> &mut ::std::option::Option<u64> {
+        &mut self.owner_id
     }
 
     // required .vault.Project project = 2;
@@ -871,6 +912,14 @@ impl JobSpec {
     pub fn get_project(&self) -> &super::vault::Project {
         self.project.as_ref().unwrap_or_else(|| super::vault::Project::default_instance())
     }
+
+    fn get_project_for_reflect(&self) -> &::protobuf::SingularPtrField<super::vault::Project> {
+        &self.project
+    }
+
+    fn mut_project_for_reflect(&mut self) -> &mut ::protobuf::SingularPtrField<super::vault::Project> {
+        &mut self.project
+    }
 }
 
 impl ::protobuf::Message for JobSpec {
@@ -885,21 +934,21 @@ impl ::protobuf::Message for JobSpec {
     }
 
     fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
-        while !try!(is.eof()) {
-            let (field_number, wire_type) = try!(is.read_tag_unpack());
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     };
-                    let tmp = try!(is.read_uint64());
+                    let tmp = is.read_uint64()?;
                     self.owner_id = ::std::option::Option::Some(tmp);
                 },
                 2 => {
-                    try!(::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.project));
+                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.project)?;
                 },
                 _ => {
-                    try!(::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields()));
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -910,11 +959,11 @@ impl ::protobuf::Message for JobSpec {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        for value in &self.owner_id {
-            my_size += ::protobuf::rt::value_size(1, *value, ::protobuf::wire_format::WireTypeVarint);
+        if let Some(v) = self.owner_id {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
         };
-        for value in &self.project {
-            let len = value.compute_size();
+        if let Some(v) = self.project.as_ref() {
+            let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -924,14 +973,14 @@ impl ::protobuf::Message for JobSpec {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.owner_id {
-            try!(os.write_uint64(1, v));
+            os.write_uint64(1, v)?;
         };
         if let Some(v) = self.project.as_ref() {
-            try!(os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited));
-            try!(os.write_raw_varint32(v.get_cached_size()));
-            try!(v.write_to_with_cached_sizes(os));
+            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
         };
-        try!(os.write_unknown_fields(self.get_unknown_fields()));
+        os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -947,12 +996,14 @@ impl ::protobuf::Message for JobSpec {
         &mut self.unknown_fields
     }
 
-    fn type_id(&self) -> ::std::any::TypeId {
-        ::std::any::TypeId::of::<JobSpec>()
-    }
-
     fn as_any(&self) -> &::std::any::Any {
         self as &::std::any::Any
+    }
+    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
+        self as &mut ::std::any::Any
+    }
+    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
+        self
     }
 
     fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -973,15 +1024,15 @@ impl ::protobuf::MessageStatic for JobSpec {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_singular_u64_accessor(
+                fields.push(::protobuf::reflect::accessor::make_option_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
                     "owner_id",
-                    JobSpec::has_owner_id,
-                    JobSpec::get_owner_id,
+                    JobSpec::get_owner_id_for_reflect,
+                    JobSpec::mut_owner_id_for_reflect,
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_message_accessor(
+                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::vault::Project>>(
                     "project",
-                    JobSpec::has_project,
-                    JobSpec::get_project,
+                    JobSpec::get_project_for_reflect,
+                    JobSpec::mut_project_for_reflect,
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<JobSpec>(
                     "JobSpec",
@@ -1001,17 +1052,15 @@ impl ::protobuf::Clear for JobSpec {
     }
 }
 
-impl ::std::cmp::PartialEq for JobSpec {
-    fn eq(&self, other: &JobSpec) -> bool {
-        self.owner_id == other.owner_id &&
-        self.project == other.project &&
-        self.unknown_fields == other.unknown_fields
-    }
-}
-
 impl ::std::fmt::Debug for JobSpec {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for JobSpec {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
@@ -1061,6 +1110,12 @@ impl ::protobuf::ProtobufEnum for Os {
 impl ::std::marker::Copy for Os {
 }
 
+impl ::protobuf::reflect::ProtobufValue for Os {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
+    }
+}
+
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum WorkerState {
     Ready = 0,
@@ -1102,6 +1157,12 @@ impl ::protobuf::ProtobufEnum for WorkerState {
 }
 
 impl ::std::marker::Copy for WorkerState {
+}
+
+impl ::protobuf::reflect::ProtobufValue for WorkerState {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
+    }
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
@@ -1154,6 +1215,12 @@ impl ::protobuf::ProtobufEnum for JobState {
 }
 
 impl ::std::marker::Copy for JobState {
+}
+
+impl ::protobuf::reflect::ProtobufValue for JobState {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
+    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = &[

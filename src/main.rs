@@ -14,16 +14,26 @@ fn main() {
 }
 
 pub fn redis_to_postgres(data_store :session_srv::data_store::DataStore) {
+println!("==========A===============");
 	let accounts = redis_extraction::extract_accounts();
 
+println!("==========B===============");
 	let re = Regex::new(r":(\d+)").unwrap();
-//	for x in accounts {
-//		for cap in re.captures_iter(&x) {
-//			let ds = data_store.clone();
+	for x in accounts {
+println!("==========C===============");
+		for cap in re.captures_iter(&x) {
+			let ds = data_store.clone();
+      let account_id = &cap[1];
+println!("here is the account_id {:?}", account_id);
+//try!(AccountSearchKey::from_str(key.as_ref()));
 //			let account_id = &cap[1].parse::<u64>().unwrap();
+//      let account = redis_lib::find_account_by_id(AccountSearchKey::from_str(account_id));
+      let account = redis_lib::find_account_by_id(account_id.to_string());
+println!("HERE IS THE ACCOUNT {:?}", account);
+
 //			redis_to_postgres_account(ds, account_id.to_be());
-//		}
-//	}
+		}
+	}
 }
 
 pub fn redis_to_postgres_account(data_store :session_srv::data_store::DataStore, id: u64, email: String, name: String ) {
@@ -110,6 +120,7 @@ mod tests {
 
     #[test]
     fn test_redis_to_postgres_accounts() {
+println!("======================starting test=====================");
          // Create account in redis
          let session = redis_lib::create_session(
                           String::from("scopuli"),
@@ -118,6 +129,7 @@ mod tests {
                           String::from("Julie Mao"));
 
 
+println!("======================one=====================");
   			 let redis_account = redis_lib::create_account(session);
 
          // Set up postgres datastore
@@ -126,14 +138,17 @@ mod tests {
 				 let ds2 = ds.clone();
 				 let ds3 = ds.clone();
 
+println!("======================two=====================");
          // Check that account does not exist in postgres
          let not_found = postgres_lib::get_account(ds1, redis_account.get_name());
          assert_eq!(not_found, None);
 
 
+println!("======================three=====================");
         // transfer account to postgres
         redis_to_postgres(ds2);
 
+println!("======================four=====================");
         // check that account is now in postgres
 //        let postgres_account = postgres_lib::get_account(ds3, redis_account.get_name()).unwrap();
 //        assert_eq!(redis_account.get_name(), postgres_account.get_name());

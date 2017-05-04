@@ -19,7 +19,8 @@ message AccountListResponse {
 
 // get an account by GH username
 message AccountGet {
-  required string name = 1;
+  optional uint64 id = 1;
+  optional string name = 2;
 }
 
 message AccountSearch {

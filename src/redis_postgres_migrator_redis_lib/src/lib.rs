@@ -7,9 +7,10 @@ extern crate r2d2_redis;
 use std::ops::Deref;
 use std::sync::Arc;
 use dbcache::InstaSet;
-use hab_sessionsrv::data_store::{AccountTable};
+use hab_sessionsrv::data_store::{DataStore, AccountTable};
 
 use self::r2d2_redis::RedisConnectionManager;
+use std::str::FromStr;
 
 pub fn create_session(token: String, extern_id: u64, email: String, name: String) -> protocol::sessionsrv::SessionCreate {
     let mut sc = protocol::sessionsrv::SessionCreate::new();
@@ -48,5 +49,38 @@ pub fn find_account(id: u64, email: &str, name: &str) -> protocol::sessionsrv::A
     sc.set_name(name.to_string());
     sc.set_extern_id(id);
     let account = hab_sessionsrv::data_store::AccountTable::find_or_create(&account_table, &sc).unwrap();
+    account
+}
+
+pub fn find_account_by_id(id: String) -> protocol::sessionsrv::Account {
+    let config = Default::default();
+    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
+    let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
+    let pool2 = pool.clone();
+
+    let ds = DataStore::new(pool);
+
+    let account_search_key = protocol::sessionsrv::AccountSearchKey::Id;
+    let mut account_search = protocol::sessionsrv::AccountSearch::new();
+    account_search.set_key(account_search_key);
+    account_search.set_value(id.clone());
+//let value: u64 = msg.take_value().parse().unwrap();
+let value: u64 = account_search.take_value().parse().unwrap();
+println!("here is the id {:?} and value {:?}", id, value);
+let account = ds.accounts.find(&value).unwrap();
+
+//println!("here is the account_search_key");
+//println!("{:?}", account_search_key);
+    //let account_by_id = ds.accounts.find(account_search_key);
+//    let account_by_id = ds.accounts.find(account_search_key);
+
+//println!("account_by_id {:?}", account_by_id);
+
+//    let account = account_get.unwrap();
+//    let account_table = AccountTable::new(pool2);
+//    let sc = protocol::sessionsrv::SessionCreate::new();
+//    sc.set_extern_id = id;
+//    let account = hab_sessionsrv::data_store::AccountTable::find_or_create(&account_table, &sc).unwrap();
+
     account
 }
