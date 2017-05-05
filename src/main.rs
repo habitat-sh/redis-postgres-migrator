@@ -1,15 +1,16 @@
-extern crate redis_postgres_migrator_redis_lib;
+extern crate redis_lib;
 extern crate postgres_lib;
 extern crate habitat_builder_sessionsrv;
 extern crate redis_extraction;
 extern crate regex;
 
-use redis_postgres_migrator_redis_lib as redis_lib;
 use habitat_builder_sessionsrv as session_srv;
 use regex::Regex;
 
 fn main() {
-    println!("bite me");
+    // Eventually will call redis_to_postgres
+    // passing the address of a redis db with the old info
+    // and a datastore for postgres
 }
 
 pub fn redis_to_postgres(redis_addr: &str, data_store: session_srv::data_store::DataStore) {

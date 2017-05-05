@@ -5,7 +5,7 @@ dependencies = [
  "habitat_builder_sessionsrv 0.0.0",
  "postgres_lib 0.1.0",
  "redis_extraction 0.1.0",
- "redis_postgres_migrator_redis_lib 0.1.0",
+ "redis_lib 0.1.0",
  "regex 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -732,7 +732,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "redis_postgres_migrator_redis_lib"
+name = "redis_lib"
 version = "0.1.0"
 dependencies = [
  "bitflags 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)",
