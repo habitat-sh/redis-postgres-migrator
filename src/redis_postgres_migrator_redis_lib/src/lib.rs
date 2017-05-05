@@ -12,7 +12,11 @@ use hab_sessionsrv::data_store::{DataStore, AccountTable};
 use self::r2d2_redis::RedisConnectionManager;
 use std::str::FromStr;
 
-pub fn create_session(token: String, extern_id: u64, email: String, name: String) -> protocol::sessionsrv::SessionCreate {
+pub fn create_session(token: String,
+                      extern_id: u64,
+                      email: String,
+                      name: String)
+                      -> protocol::sessionsrv::SessionCreate {
     let mut sc = protocol::sessionsrv::SessionCreate::new();
     sc.set_token(token);
     sc.set_extern_id(extern_id);
@@ -22,10 +26,12 @@ pub fn create_session(token: String, extern_id: u64, email: String, name: String
     sc
 }
 
-pub fn create_account(redis_addr: &str, session: protocol::sessionsrv::SessionCreate) -> protocol::sessionsrv::Account {
+pub fn create_account(redis_addr: &str,
+                      session: protocol::sessionsrv::SessionCreate)
+                      -> protocol::sessionsrv::Account {
 
     let pool = create_pool(redis_addr);
-	  let account_table = hab_sessionsrv::data_store::AccountTable::new(pool);
+    let account_table = hab_sessionsrv::data_store::AccountTable::new(pool);
 
     let mut account = protocol::sessionsrv::Account::new();
     account.set_email(session.get_email().to_string());
