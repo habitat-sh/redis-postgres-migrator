@@ -29,17 +29,17 @@ pub fn redis_to_postgres(data_store :session_srv::data_store::DataStore) {
 }
 
 pub fn redis_to_postgres_account(data_store :session_srv::data_store::DataStore, id: u64, email: String, name: String ) {
-	let redis_account = redis_lib::find_account(id, &email, &name);
-	let config = session_srv::config::Config::default();
+   let redis_account = redis_lib::find_account_by_id(id.to_string());
+	 let config = session_srv::config::Config::default();
 
-	let session = postgres_lib::create_session(
-			"bite me".to_string(),
-			redis_account.get_id(),
-			redis_account.get_email().to_string(),
-			redis_account.get_name().to_string()
-			);
+	 let session = postgres_lib::create_session(
+			 "bite me".to_string(),
+			 redis_account.get_id(),
+			 redis_account.get_email().to_string(),
+			 redis_account.get_name().to_string()
+			 );
 
-	let account = postgres_lib::create_account(data_store, session);
+	 let account = postgres_lib::create_account(data_store, session);
 }
 
 #[cfg(test)]
@@ -56,7 +56,7 @@ mod tests {
 
 		let account = redis_lib::create_account(session);
 
-		let found_account = redis_lib::find_account(account.get_id(), account.get_email(), account.get_name());
+		let found_account = redis_lib::find_account_by_id(account.get_id().to_string());
 
 		assert_eq!(account.get_id(), found_account.get_id());
 	}

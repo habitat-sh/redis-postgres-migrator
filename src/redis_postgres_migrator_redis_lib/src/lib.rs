@@ -38,20 +38,6 @@ pub fn create_account(session: protocol::sessionsrv::SessionCreate) -> protocol:
     account
 }
 
-pub fn find_account(id: u64, email: &str, name: &str) -> protocol::sessionsrv::Account {
-    let config = Default::default();
-    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
-    let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
-	  let account_table = hab_sessionsrv::data_store::AccountTable::new(pool);
-
-    let mut sc = protocol::sessionsrv::SessionCreate::new();
-    sc.set_email(email.to_string());
-    sc.set_name(name.to_string());
-    sc.set_extern_id(id);
-    let account = hab_sessionsrv::data_store::AccountTable::find_or_create(&account_table, &sc).unwrap();
-    account
-}
-
 pub fn find_account_by_id(id: String) -> protocol::sessionsrv::Account {
     let config = Default::default();
     let manager = RedisConnectionManager::new("redis://localhost").unwrap();
