@@ -13,8 +13,8 @@ fn main() {
 	println!("bite me");
 }
 
-pub fn redis_to_postgres(data_store :session_srv::data_store::DataStore) {
-	let accounts = redis_extraction::extract_accounts();
+pub fn redis_to_postgres(redis_addr: &str, data_store :session_srv::data_store::DataStore) {
+	let accounts = redis_extraction::extract_accounts(redis_addr);
 
 	let re = Regex::new(r":(\d+)").unwrap();
 	for x in accounts {
@@ -112,6 +112,7 @@ mod tests {
 
     #[test]
     fn test_redis_to_postgres_accounts() {
+         let redis_addr = "redis://127.0.0.1/";
          // Create account in redis
          let session = redis_lib::create_session(
                           String::from("scopuli"),
@@ -141,7 +142,7 @@ mod tests {
          assert_eq!(not_found2, None);
 
         // transfer account to postgres
-        redis_to_postgres(ds.clone());
+        redis_to_postgres(redis_addr, ds.clone());
 
         // check that accounts are now in postgres
         let postgres_account = postgres_lib::get_account(ds.clone(), redis_account.get_name()).unwrap();
