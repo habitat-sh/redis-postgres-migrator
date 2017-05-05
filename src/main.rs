@@ -1,11 +1,10 @@
 extern crate redis_postgres_migrator_redis_lib;
-extern crate redis_postgres_migrator_postgres_lib;
+extern crate postgres_lib;
 extern crate habitat_builder_sessionsrv;
 extern crate redis_extraction;
 extern crate regex;
 
 use redis_postgres_migrator_redis_lib as redis_lib;
-use redis_postgres_migrator_postgres_lib as postgres_lib;
 use habitat_builder_sessionsrv as session_srv;
 use regex::Regex;
 

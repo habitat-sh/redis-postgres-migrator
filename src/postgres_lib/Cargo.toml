@@ -1,5 +1,5 @@
 [package]
-name = "redis_postgres_migrator_postgres_lib"
+name = "postgres_lib"
 version = "0.1.0"
 authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
 
