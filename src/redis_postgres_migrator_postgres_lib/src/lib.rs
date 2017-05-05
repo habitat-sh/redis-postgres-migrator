@@ -10,7 +10,11 @@ use hab_db::pool::Pool;
 use std::ops::Deref;
 
 
-pub fn create_session(token: String, extern_id: u64, email: String, name: String) -> protocol::sessionsrv::SessionCreate {
+pub fn create_session(token: String,
+                      extern_id: u64,
+                      email: String,
+                      name: String)
+                      -> protocol::sessionsrv::SessionCreate {
     let mut sc = protocol::sessionsrv::SessionCreate::new();
     sc.set_token(token);
     sc.set_extern_id(extern_id);
@@ -21,14 +25,19 @@ pub fn create_session(token: String, extern_id: u64, email: String, name: String
 }
 
 
-pub fn create_account(data_store: sessionsrv_data_store, session: protocol::sessionsrv::SessionCreate) -> protocol::sessionsrv::Session {
+pub fn create_account(data_store: sessionsrv_data_store,
+                      session: protocol::sessionsrv::SessionCreate)
+                      -> protocol::sessionsrv::Session {
     let config = hab_sessionsrv::config::Config::default();
-    let account_creation = data_store.find_or_create_account_via_session(&session, false, false, false);
+    let account_creation =
+        data_store.find_or_create_account_via_session(&session, false, false, false);
     let account = account_creation.unwrap();
     account
 }
 
-pub fn get_account(data_store: sessionsrv_data_store, account_name: &str) -> std::option::Option<protocol::sessionsrv::Account> {
+pub fn get_account(data_store: sessionsrv_data_store,
+                   account_name: &str)
+                   -> std::option::Option<protocol::sessionsrv::Account> {
     let mut ag = protocol::sessionsrv::AccountGet::new();
     ag.set_name(account_name.to_string());
     let account_get = data_store.get_account(&ag);
