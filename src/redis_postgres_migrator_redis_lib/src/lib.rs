@@ -22,9 +22,9 @@ pub fn create_session(token: String, extern_id: u64, email: String, name: String
     sc
 }
 
-pub fn create_account(session: protocol::sessionsrv::SessionCreate) -> protocol::sessionsrv::Account {
+pub fn create_account(redis_addr: &str, session: protocol::sessionsrv::SessionCreate) -> protocol::sessionsrv::Account {
 
-    let pool = create_pool("redis://localhost");
+    let pool = create_pool(redis_addr);
 	  let account_table = hab_sessionsrv::data_store::AccountTable::new(pool);
 
     let mut account = protocol::sessionsrv::Account::new();
@@ -35,8 +35,8 @@ pub fn create_account(session: protocol::sessionsrv::SessionCreate) -> protocol:
     account
 }
 
-pub fn find_account_by_id(id: String) -> protocol::sessionsrv::Account {
-    let pool = create_pool("redis://localhost");
+pub fn find_account_by_id(redis_addr: &str, id: String) -> protocol::sessionsrv::Account {
+    let pool = create_pool(redis_addr);
     let ds = DataStore::new(pool);
 
     let value = account_value(id);
@@ -47,7 +47,7 @@ pub fn find_account_by_id(id: String) -> protocol::sessionsrv::Account {
 
 fn create_pool(redis_addr: &str) -> std::sync::Arc<r2d2::Pool<r2d2_redis::RedisConnectionManager>> {
     let config = Default::default();
-    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
+    let manager = RedisConnectionManager::new(redis_addr).unwrap();
     let mut pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
     pool
 }
