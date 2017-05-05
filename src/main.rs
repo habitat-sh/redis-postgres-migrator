@@ -20,12 +20,12 @@ pub fn redis_to_postgres(redis_addr: &str, data_store: session_srv::data_store::
     for x in accounts {
         for cap in re.captures_iter(&x) {
             let ds = data_store.clone();
-            let account_id = &cap[1];
-            let account = redis_lib::find_account_by_id(redis_addr, account_id.to_string());
+            let account_id_string = &cap[1];
+            let account_id = account_id_string.parse::<u64>();
 
             redis_to_postgres_account(redis_addr,
                                       ds,
-                                      account.get_id())
+                                      account_id.unwrap())
         }
     }
 }
