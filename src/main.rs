@@ -25,22 +25,18 @@ pub fn redis_to_postgres(redis_addr: &str, data_store: session_srv::data_store::
 
             redis_to_postgres_account(redis_addr,
                                       ds,
-                                      account.get_id(),
-                                      account.get_email().to_string(),
-                                      account.get_name().to_string());
+                                      account.get_id())
         }
     }
 }
 
 pub fn redis_to_postgres_account(redis_addr: &str,
                                  data_store: session_srv::data_store::DataStore,
-                                 id: u64,
-                                 email: String,
-                                 name: String) {
+                                 id: u64) {
     let redis_account = redis_lib::find_account_by_id(redis_addr, id.to_string());
     let config = session_srv::config::Config::default();
 
-    let session = postgres_lib::create_session("bite me".to_string(),
+    let session = postgres_lib::create_session("pretend_session".to_string(),
                                                redis_account.get_id(),
                                                redis_account.get_email().to_string(),
                                                redis_account.get_name().to_string());
@@ -111,9 +107,7 @@ mod tests {
 
         redis_to_postgres_account(test_redis_addr(),
                                   ds2,
-                                  redis_account.get_id(),
-                                  redis_account.get_email().to_string(),
-                                  redis_account.get_name().to_string());
+                                  redis_account.get_id());
 
         // check that account is now in postgres
         let postgres_account = postgres_lib::get_account(ds3, redis_account.get_name()).unwrap();
