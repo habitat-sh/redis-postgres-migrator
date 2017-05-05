@@ -24,10 +24,7 @@ pub fn create_session(token: String, extern_id: u64, email: String, name: String
 
 pub fn create_account(session: protocol::sessionsrv::SessionCreate) -> protocol::sessionsrv::Account {
 
-    let config = Default::default();
-    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
-    let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
-
+    let pool = create_pool("redis://localhost");
 	  let account_table = hab_sessionsrv::data_store::AccountTable::new(pool);
 
     let mut account = protocol::sessionsrv::Account::new();
@@ -39,13 +36,23 @@ pub fn create_account(session: protocol::sessionsrv::SessionCreate) -> protocol:
 }
 
 pub fn find_account_by_id(id: String) -> protocol::sessionsrv::Account {
-    let config = Default::default();
-    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
-    let pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
-    let pool2 = pool.clone();
-
+    let pool = create_pool("redis://localhost");
     let ds = DataStore::new(pool);
 
+    let value = account_value(id);
+    let account = ds.accounts.find(&value).unwrap();
+
+    account
+}
+
+fn create_pool(redis_addr: &str) -> std::sync::Arc<r2d2::Pool<r2d2_redis::RedisConnectionManager>> {
+    let config = Default::default();
+    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
+    let mut pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
+    pool
+}
+
+fn account_value(id: String) -> u64 {
     let account_search_key = protocol::sessionsrv::AccountSearchKey::Id;
     let mut account_search = protocol::sessionsrv::AccountSearch::new();
 
@@ -53,7 +60,5 @@ pub fn find_account_by_id(id: String) -> protocol::sessionsrv::Account {
     account_search.set_value(id.clone());
 
     let value: u64 = account_search.take_value().parse().unwrap();
-    let account = ds.accounts.find(&value).unwrap();
-
-    account
+    value
 }
