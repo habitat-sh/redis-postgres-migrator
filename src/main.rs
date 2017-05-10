@@ -1,3 +1,4 @@
+use std::env;
 extern crate redis_lib;
 extern crate postgres_lib;
 extern crate habitat_builder_sessionsrv;
@@ -7,7 +8,14 @@ extern crate regex;
 use habitat_builder_sessionsrv as session_srv;
 use regex::Regex;
 
+#[cfg(not(test))]
 fn main() {
+    let args: Vec<_> = env::args().collect();
+    println!("here is the arg!");
+    println!("{:?}", args);
+
+    let data_store = postgres_lib::create_real_data_store();
+
     // Eventually will call redis_to_postgres
     // passing the address of a redis db with the old info
     // and a datastore for postgres
