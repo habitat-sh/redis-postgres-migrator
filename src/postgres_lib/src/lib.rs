@@ -13,6 +13,8 @@ extern crate postgres;
 extern crate r2d2;
 extern crate r2d2_postgres;
 extern crate num_cpus;
+use std::net::{Ipv4Addr, IpAddr};
+use std::time::Duration;
 
 use postgres::{Connection};
 use r2d2_postgres::{PostgresConnectionManager, TlsMode};
@@ -61,19 +63,52 @@ pub fn create_test_data_store() -> sessionsrv_data_store {
 pub fn create_real_data_store() {
     let address = "postgres://hab@127.0.0.1/builder_sessionsrv";
 
-//    let pool_size = (num_cpus::get() * 2) as u32;
- //   let connection_timeout_sec = 3600;
+    let config = builder_sessionsrv_config();
+
+    let pool_config_builder =
+        r2d2::Config::<(), r2d2_postgres::Error>::builder()
+				    .pool_size(config.pool_size)
+             .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
+
+println!("================");
+println!("one");
+println!("{:?}", pool_config_builder);
+
+     let pool_config = pool_config_builder.build();
+
+println!("================");
+println!("two");
+println!("{:?}", pool_config);
+
+     let manager = PostgresConnectionManager::new(config, TlsMode::None);
+
 
 //		let r2_config = r2d2::Config::<(), r2d2_postgres::Error>::default();
 //    let r2_manager = PostgresConnectionManager::new(address, TlsMode::None).unwrap();
 
 //    let r2_pool = r2d2::Pool::new(r2_config, r2_manager).unwrap();
 
-    let postgres_connection = Connection::connect(address, postgres::TlsMode::None).unwrap();
+//    let postgres_connection = Connection::connect(address, postgres::TlsMode::None).unwrap();
 
-    postgres_connection.query("set search_path to shard_0", &[]);
+//    postgres_connection.query("set search_path to shard_0", &[]);
 
-    let result = postgres_connection.query("SELECT * FROM ACCOUNTS", &[]);
-    println!("{:?}", result);
+//    let result = postgres_connection.query("SELECT * FROM ACCOUNTS", &[]);
+//    println!("{:?}", result);
 
 }
+
+    fn builder_sessionsrv_config() -> hab_db::config::DataStoreCfg {
+        let config = hab_db::config::DataStoreCfg {
+            host: IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
+            port: 5432,
+            user: String::from("hab"),
+            password: None,
+            database: String::from("builder_sessionsrv"),
+            connection_retry_ms: 300,
+            connection_timeout_sec: 3600,
+            connection_test: false,
+            pool_size: (num_cpus::get() * 2) as u32
+        };
+
+        config
+    }
