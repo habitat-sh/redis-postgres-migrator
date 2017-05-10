@@ -1,5 +1,5 @@
 [package]
-name = "habitat_builder_sessionsrv"
+name = "habitat_builder_sessionsrv_redis"
 version = "0.0.0"
 authors = ["Adam Jacob <adam@chef.io>", "Jamie Winsor <reset@chef.io>", "Fletcher Nichol <fnichol@chef.io>", "Joshua Timberman <joshua@chef.io>", "Dave Parfitt <dparfitt@chef.io>"]
 description = "Habitat-Builder Session Server"
@@ -23,16 +23,16 @@ features = [ "suggestions", "color", "unstable" ]
 git = "https://github.com/erickt/rust-zmq.git"
 branch = "release/v0.8"
 
-[dependencies.habitat_core]
+[dependencies.habitat_core_redis]
 path = "../core"
 
-[dependencies.habitat_builder_dbcache]
+[dependencies.habitat_builder_dbcache_redis]
 path = "../builder-dbcache"
 
-[dependencies.habitat_builder_protocol]
+[dependencies.habitat_builder_protocol_redis]
 path = "../builder-protocol"
 
-[dependencies.habitat_net]
+[dependencies.habitat_net_redis]
 path = "../net"
 
 [features]

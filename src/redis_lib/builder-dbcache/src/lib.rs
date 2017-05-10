@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate habitat_builder_protocol as protocol;
+extern crate habitat_builder_protocol_redis as protocol;
 #[macro_use]
 extern crate log;
 extern crate num_cpus;

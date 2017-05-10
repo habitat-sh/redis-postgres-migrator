@@ -1,5 +1,5 @@
 [package]
-name = "habitat_net"
+name = "habitat_net_redis"
 version = "0.0.0"
 authors = ["Adam Jacob <adam@chef.io>", "Jamie Winsor <reset@chef.io>", "Fletcher Nichol <fnichol@chef.io>", "Joshua Timberman <joshua@chef.io>", "Dave Parfitt <dparfitt@chef.io>"]
 workspace = "../../"
@@ -19,7 +19,7 @@ rustc-serialize = "*"
 time = "*"
 unicase = "*"
 
-[dependencies.habitat_builder_protocol]
+[dependencies.habitat_builder_protocol_redis]
 path = "../builder-protocol"
 
 [dependencies.zmq]

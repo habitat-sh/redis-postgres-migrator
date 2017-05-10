@@ -1,5 +1,5 @@
 [package]
-name = "habitat_builder_protocol"
+name = "habitat_builder_protocol_redis"
 version = "0.0.0"
 authors = ["Adam Jacob <adam@chef.io>", "Jamie Winsor <reset@chef.io>", "Fletcher Nichol <fnichol@chef.io>", "Joshua Timberman <joshua@chef.io>", "Dave Parfitt <dparfitt@chef.io>"]
 description = "Habitat-Builder Network Server Protocol"
@@ -11,7 +11,7 @@ redis = "*"
 rustc-serialize = "*"
 time = "*"
 
-[dependencies.habitat_core]
+[dependencies.habitat_core_redis]
 path = "../core"
 
 [build-dependencies]
