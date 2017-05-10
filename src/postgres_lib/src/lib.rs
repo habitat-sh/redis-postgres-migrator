@@ -11,6 +11,7 @@ extern crate num_cpus;
 extern crate postgres;
 use std::net::{Ipv4Addr, IpAddr};
 use postgres::params::{ConnectParams, Host, IntoConnectParams};
+use postgres::{Connection};
 
 extern crate r2d2;
 extern crate r2d2_postgres;
@@ -18,6 +19,7 @@ extern crate r2d2_postgres;
 use std::thread;
 use r2d2_postgres::{TlsMode, PostgresConnectionManager};
 use std::time::Duration;
+use hab_core::Error;
 
 pub fn create_session(token: String,
                       extern_id: u64,
@@ -72,23 +74,47 @@ pub fn create_real_data_store() {
 						pool_size: (num_cpus::get() * 2) as u32
     };
 
-    let mut shards: Vec<protocol::sharding::ShardId> = (1..128).collect();
+//    let mut shards: Vec<protocol::sharding::ShardId> = (1..128).collect();
+
+//    let r2_config = r2d2::Config::<(), r2d2_postgres::Error>::builder().pool_size(config.pool_size).build();
+//    let manager = PostgresConnectionManager::new("builder-sessionsrv://hab@localhost",
+//                                                TlsMode::None).unwrap();
+//    let manager = PostgresConnectionManager::new("postgres://postgres@localhost",
+//                                                TlsMode::None);
+let connection = Connection::connect("postgres://hab@localhost", postgres::TlsMode::None);
+println!("connection {:?}", connection);
 
 
-    let config = r2d2::Config::default();
-//    let pool_config_builder = r2d2::Config::builder()
-//        .pool_size(config.pool_size)
-//        .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
+//println!("one");
+//println!("{:?}", r2_config);
 
-//    let builder_session_srv_pool = Pool::new(
-//        &builder_session_srv_db_config,
-//        shards
-//    );
-
-//println!("{}", builder_session_srv_db_config);
-//    let builder_session_srv_data_store = session_srv::data_store::DataStore::new(&builder_session_srv_config);
 //println!("two");
-//    println!("{:?}", builder_session_srv_data_store);
+//println!("{:?}", manager);
+
+//println!("three");
+//println!("{:?}", manager.unwrap());
+
+//println!("four");
+//let mut my_thing: () = manager;
+//let mut my_thing: () = manager.unwrap();
+
+//let pool = r2d2::Pool::new(r2_config, manager);
+
+//    let pool_config_builder = r2d2::Config::<(), r2d2_postgres::Error>::builder()
+//                                  .pool_size(config.pool_size)
+//                                  .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
+//println!("====================");
+//println!("pool_config_builder: {:?}", pool_config_builder);
+
+//    let pool_config = pool_config_builder.build();
+
+//println!("====================");
+//println!("pool_config: {:?}", pool_config);
+
+//let manager = PostgresConnectionManager::new(r2_config, TlsMode::None)?;
+
+//println!("====================");
+//println!("manager: {:?}", manager);
 
 
 }
