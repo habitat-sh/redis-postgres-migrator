@@ -16,19 +16,19 @@ rustc-serialize = "*"
 time = "*"
 toml = "0.1.29"
 
-[dependencies.habitat_builder_dbcache]
+[dependencies.habitat_builder_dbcache_redis]
 path = "./builder-dbcache"
 
-[dependencies.habitat_builder_protocol]
+[dependencies.habitat_builder_protocol_redis]
 path = "./builder-protocol"
 
-[dependencies.habitat_core]
+[dependencies.habitat_core_redis]
 path = "./core"
 
-[dependencies.habitat_builder_sessionsrv]
+[dependencies.habitat_builder_sessionsrv_redis]
 path = "./builder-sessionsrv"
 
-[dependencies.habitat_net]
+[dependencies.habitat_net_redis]
 path = "./net"
 
 [dependencies.zmq]
