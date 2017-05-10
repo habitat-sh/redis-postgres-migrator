@@ -9,6 +9,14 @@ use protocol::sessionsrv::Session;
 use hab_db::pool::Pool;
 use std::ops::Deref;
 
+extern crate postgres;
+extern crate r2d2;
+extern crate r2d2_postgres;
+extern crate num_cpus;
+
+use postgres::{Connection};
+use r2d2_postgres::{PostgresConnectionManager, TlsMode};
+
 
 pub fn create_session(token: String,
                       extern_id: u64,
@@ -48,4 +56,24 @@ pub fn get_account(data_store: sessionsrv_data_store,
 pub fn create_test_data_store() -> sessionsrv_data_store {
     let ds = datastore_test!(sessionsrv_data_store);
     ds
+}
+
+pub fn create_real_data_store() {
+    let address = "postgres://hab@127.0.0.1/builder_sessionsrv";
+
+//    let pool_size = (num_cpus::get() * 2) as u32;
+ //   let connection_timeout_sec = 3600;
+
+//		let r2_config = r2d2::Config::<(), r2d2_postgres::Error>::default();
+//    let r2_manager = PostgresConnectionManager::new(address, TlsMode::None).unwrap();
+
+//    let r2_pool = r2d2::Pool::new(r2_config, r2_manager).unwrap();
+
+    let postgres_connection = Connection::connect(address, postgres::TlsMode::None).unwrap();
+
+    postgres_connection.query("set search_path to shard_0", &[]);
+
+    let result = postgres_connection.query("SELECT * FROM ACCOUNTS", &[]);
+    println!("{:?}", result);
+
 }

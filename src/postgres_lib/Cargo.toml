@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
 
 [dependencies]
+num_cpus="*"
+postgres="*"
+r2d2="*"
+r2d2_postgres="*"
 
 [dependencies.habitat_builder_sessionsrv]
 path = "./builder-sessionsrv"
