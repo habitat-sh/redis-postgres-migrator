@@ -10,11 +10,12 @@ use regex::Regex;
 
 fn main() {
     let args: Vec<_> = env::args().collect();
-
     let redis_address = &args[1];
-    let data_store = postgres_lib::create_real_data_store();
 
-    redis_to_postgres(redis_address, data_store);
+    // We start with transferring accounts, which live in the builder_sessionsrv data store
+    let sessionsrv_data_store = postgres_lib::create_sessionsrv_data_store();
+
+    redis_to_postgres(redis_address, sessionsrv_data_store);
 }
 
 pub fn redis_to_postgres(redis_addr: &str, data_store: session_srv::data_store::DataStore) {

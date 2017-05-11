@@ -63,28 +63,10 @@ pub fn create_test_data_store() -> sessionsrv_data_store {
     ds
 }
 
-pub fn create_real_data_store() -> sessionsrv_data_store {
-    let address = "postgres://hab@127.0.0.1/builder_sessionsrv";
-
+pub fn create_sessionsrv_data_store() -> sessionsrv_data_store {
     let config = builder_sessionsrv_config();
 
-    let pool_config_builder =
-        r2d2::Config::<postgres::Connection, r2d2_postgres::Error>::builder()
-            .pool_size(config.pool_size)
-            .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
-
-    let pool_config = pool_config_builder.build();
-
-    let manager = PostgresConnectionManager::new(&config, TlsMode::None).unwrap();
-
-    let r2d2_pool = r2d2::Pool::new(pool_config, manager).unwrap();
-
-    let mut shards: Vec<protocol::sharding::ShardId> = (1..128).collect();
-
-    let pool = hab_db::pool::Pool {
-                   inner: r2d2_pool,
-                   shards: shards
-               };
+    let pool = create_pool(config);
 
     let sessionsrv_data_store = sessionsrv_data_store {
                                     pool: pool
@@ -106,4 +88,32 @@ fn builder_sessionsrv_config() -> hab_db::config::DataStoreCfg {
     };
 
     config
+}
+
+fn create_pool_config_builder(config: hab_db::config::DataStoreCfg) -> r2d2::config::Builder<postgres::Connection, r2d2_postgres::Error> {
+    let pool_builder = r2d2::Config::<postgres::Connection, r2d2_postgres::Error>::builder()
+        .pool_size(config.pool_size)
+        .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
+    pool_builder
+}
+
+fn r2d2_pool(config: hab_db::config::DataStoreCfg) -> r2d2::Pool<r2d2_postgres::PostgresConnectionManager> {
+    let pool_config_builder = create_pool_config_builder(config.clone());
+    let pool_config = pool_config_builder.build();
+
+    let manager = PostgresConnectionManager::new(&config, TlsMode::None).unwrap();
+    let r2d2_pool = r2d2::Pool::new(pool_config, manager).unwrap();
+    r2d2_pool
+}
+
+fn create_pool(config: hab_db::config::DataStoreCfg) -> hab_db::pool::Pool {
+    let mut shards: Vec<protocol::sharding::ShardId> = (1..128).collect();
+
+    let r2d2_pool = r2d2_pool(config);
+
+    let pool = hab_db::pool::Pool {
+                   inner: r2d2_pool,
+                   shards: shards
+               };
+    pool
 }
