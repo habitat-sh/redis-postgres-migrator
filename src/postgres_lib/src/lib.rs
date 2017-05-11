@@ -4,7 +4,11 @@ extern crate habitat_core as hab_core;
 extern crate habitat_net as hab_net;
 #[macro_use]
 extern crate habitat_builder_db as hab_db;
+extern crate habitat_builder_originsrv as hab_originsrv;
+
 use hab_sessionsrv::data_store::DataStore as sessionsrv_data_store;
+use hab_originsrv::data_store::Datastore as originsrv_data_store;
+
 use protocol::sessionsrv::Session;
 use hab_db::pool::Pool;
 use std::ops::Deref;
@@ -63,28 +67,10 @@ pub fn create_test_data_store() -> sessionsrv_data_store {
     ds
 }
 
-pub fn create_real_data_store() -> sessionsrv_data_store {
-    let address = "postgres://hab@127.0.0.1/builder_sessionsrv";
+pub fn create_sessionsrv_data_store() -> sessionsrv_data_store {
+    let sessionsrv_config = data_store_config("builder_sessionsrv");
 
-    let config = builder_sessionsrv_config();
-
-    let pool_config_builder =
-        r2d2::Config::<postgres::Connection, r2d2_postgres::Error>::builder()
-            .pool_size(config.pool_size)
-            .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
-
-    let pool_config = pool_config_builder.build();
-
-    let manager = PostgresConnectionManager::new(&config, TlsMode::None).unwrap();
-
-    let r2d2_pool = r2d2::Pool::new(pool_config, manager).unwrap();
-
-    let mut shards: Vec<protocol::sharding::ShardId> = (1..128).collect();
-
-    let pool = hab_db::pool::Pool {
-                   inner: r2d2_pool,
-                   shards: shards
-               };
+    let pool = create_pool(sessionsrv_config);
 
     let sessionsrv_data_store = sessionsrv_data_store {
                                     pool: pool
@@ -92,13 +78,13 @@ pub fn create_real_data_store() -> sessionsrv_data_store {
     sessionsrv_data_store
 }
 
-fn builder_sessionsrv_config() -> hab_db::config::DataStoreCfg {
+fn data_store_config(database_name: &str) -> hab_db::config::DataStoreCfg {
     let config = hab_db::config::DataStoreCfg {
         host: IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
         port: 5432,
         user: String::from("hab"),
         password: None,
-        database: String::from("builder_sessionsrv"),
+        database: String::from(database_name),
         connection_retry_ms: 300,
         connection_timeout_sec: 3600,
         connection_test: false,
@@ -106,4 +92,32 @@ fn builder_sessionsrv_config() -> hab_db::config::DataStoreCfg {
     };
 
     config
+}
+
+fn create_pool_config_builder(config: hab_db::config::DataStoreCfg) -> r2d2::config::Builder<postgres::Connection, r2d2_postgres::Error> {
+    let pool_builder = r2d2::Config::<postgres::Connection, r2d2_postgres::Error>::builder()
+        .pool_size(config.pool_size)
+        .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
+    pool_builder
+}
+
+fn r2d2_pool(config: hab_db::config::DataStoreCfg) -> r2d2::Pool<r2d2_postgres::PostgresConnectionManager> {
+    let pool_config_builder = create_pool_config_builder(config.clone());
+    let pool_config = pool_config_builder.build();
+
+    let manager = PostgresConnectionManager::new(&config, TlsMode::None).unwrap();
+    let r2d2_pool = r2d2::Pool::new(pool_config, manager).unwrap();
+    r2d2_pool
+}
+
+fn create_pool(config: hab_db::config::DataStoreCfg) -> hab_db::pool::Pool {
+    let mut shards: Vec<protocol::sharding::ShardId> = (1..128).collect();
+
+    let r2d2_pool = r2d2_pool(config);
+
+    let pool = hab_db::pool::Pool {
+                   inner: r2d2_pool,
+                   shards: shards
+               };
+    pool
 }
