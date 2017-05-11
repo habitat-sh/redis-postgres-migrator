@@ -10,17 +10,11 @@ use regex::Regex;
 
 fn main() {
     let args: Vec<_> = env::args().collect();
-//    println!("here is the arg!");
-//    println!("{:?}", args);
 
     let redis_address = &args[1];
     let data_store = postgres_lib::create_real_data_store();
 
-println!("redis_address {:?}", redis_address);
-println!("data_store {:?}", data_store);
-
     redis_to_postgres(redis_address, data_store);
-
 }
 
 pub fn redis_to_postgres(redis_addr: &str, data_store: session_srv::data_store::DataStore) {
