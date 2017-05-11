@@ -63,7 +63,7 @@ pub fn create_test_data_store() -> sessionsrv_data_store {
     ds
 }
 
-pub fn create_real_data_store() {
+pub fn create_real_data_store() -> sessionsrv_data_store {
     let address = "postgres://hab@127.0.0.1/builder_sessionsrv";
 
     let config = builder_sessionsrv_config();
@@ -77,7 +77,19 @@ pub fn create_real_data_store() {
 
     let manager = PostgresConnectionManager::new(&config, TlsMode::None).unwrap();
 
-    let pool = r2d2::Pool::new(pool_config, manager);
+    let r2d2_pool = r2d2::Pool::new(pool_config, manager).unwrap();
+
+    let mut shards: Vec<protocol::sharding::ShardId> = (1..128).collect();
+
+    let pool = hab_db::pool::Pool {
+                   inner: r2d2_pool,
+                   shards: shards
+               };
+
+    let sessionsrv_data_store = sessionsrv_data_store {
+                                    pool: pool
+                                };
+    sessionsrv_data_store
 }
 
 fn builder_sessionsrv_config() -> hab_db::config::DataStoreCfg {

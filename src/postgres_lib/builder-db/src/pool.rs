@@ -28,7 +28,7 @@ use protocol::{Routable, RouteKey, ShardId, SHARD_COUNT};
 
 #[derive(Clone)]
 pub struct Pool {
-    inner: r2d2::Pool<PostgresConnectionManager>,
+    pub inner: r2d2::Pool<PostgresConnectionManager>,
     pub shards: Vec<ShardId>,
 }
 
