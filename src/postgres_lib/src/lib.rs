@@ -4,7 +4,11 @@ extern crate habitat_core as hab_core;
 extern crate habitat_net as hab_net;
 #[macro_use]
 extern crate habitat_builder_db as hab_db;
+extern crate habitat_builder_originsrv as hab_originsrv;
+
 use hab_sessionsrv::data_store::DataStore as sessionsrv_data_store;
+use hab_originsrv::data_store::Datastore as originsrv_data_store;
+
 use protocol::sessionsrv::Session;
 use hab_db::pool::Pool;
 use std::ops::Deref;
@@ -64,9 +68,9 @@ pub fn create_test_data_store() -> sessionsrv_data_store {
 }
 
 pub fn create_sessionsrv_data_store() -> sessionsrv_data_store {
-    let config = builder_sessionsrv_config();
+    let sessionsrv_config = data_store_config("builder_sessionsrv");
 
-    let pool = create_pool(config);
+    let pool = create_pool(sessionsrv_config);
 
     let sessionsrv_data_store = sessionsrv_data_store {
                                     pool: pool
@@ -74,13 +78,13 @@ pub fn create_sessionsrv_data_store() -> sessionsrv_data_store {
     sessionsrv_data_store
 }
 
-fn builder_sessionsrv_config() -> hab_db::config::DataStoreCfg {
+fn data_store_config(database_name: &str) -> hab_db::config::DataStoreCfg {
     let config = hab_db::config::DataStoreCfg {
         host: IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
         port: 5432,
         user: String::from("hab"),
         password: None,
-        database: String::from("builder_sessionsrv"),
+        database: String::from(database_name),
         connection_retry_ms: 300,
         connection_timeout_sec: 3600,
         connection_test: false,
