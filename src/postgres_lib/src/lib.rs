@@ -18,7 +18,7 @@ use std::time::Duration;
 use std::error;
 use std::thread;
 
-use postgres::{Connection};
+use postgres::Connection;
 use r2d2_postgres::{PostgresConnectionManager, TlsMode};
 use postgres::params::IntoConnectParams;
 use r2d2::ManageConnection;
@@ -70,74 +70,28 @@ pub fn create_real_data_store() {
 
     let pool_config_builder =
         r2d2::Config::<postgres::Connection, r2d2_postgres::Error>::builder()
-				    .pool_size(config.pool_size)
-             .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
+            .pool_size(config.pool_size)
+            .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
 
-println!("================");
-println!("one");
-println!("{:?}", pool_config_builder);
+    let pool_config = pool_config_builder.build();
 
-     let pool_config = pool_config_builder.build();
+    let manager = PostgresConnectionManager::new(&config, TlsMode::None).unwrap();
 
-println!("================");
-println!("two");
-println!("{:?}", pool_config);
-
-//     let manager = PostgresConnectionManager::new(&config, TlsMode::None);
-     let manager = PostgresConnectionManager::new(&config, TlsMode::None).unwrap();
-
-println!("================");
-println!("three");
-println!("{:?}", manager);
-
-let pool = r2d2::Pool::new(pool_config, manager);
-println!("================");
-println!("three");
-println!("{:?}", pool);
-
-//let my_thing: () = manager;
-
-//    match r2d2::Pool::new(pool_config, manager) {
-//		Ok(pool) => {
-//        println!("{:?}", pool);
-//		 }
-//		Err(e) => {
-//       println!("ERRORZ");
-//			error!("Error initializing connection pool to Postgres, will retry: {}",
-//				 e)
-//    }
-//}
-
-//println!("================");
-//println!("four");
-//println!("{:?}", pool);
-
-//		let r2_config = r2d2::Config::<(), r2d2_postgres::Error>::default();
-//    let r2_manager = PostgresConnectionManager::new(address, TlsMode::None).unwrap();
-
-//    let r2_pool = r2d2::Pool::new(r2_config, r2_manager).unwrap();
-
-//    let postgres_connection = Connection::connect(address, postgres::TlsMode::None).unwrap();
-
-//    postgres_connection.query("set search_path to shard_0", &[]);
-
-//    let result = postgres_connection.query("SELECT * FROM ACCOUNTS", &[]);
-//    println!("{:?}", result);
-
+    let pool = r2d2::Pool::new(pool_config, manager);
 }
 
-    fn builder_sessionsrv_config() -> hab_db::config::DataStoreCfg {
-        let config = hab_db::config::DataStoreCfg {
-            host: IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
-            port: 5432,
-            user: String::from("hab"),
-            password: None,
-            database: String::from("builder_sessionsrv"),
-            connection_retry_ms: 300,
-            connection_timeout_sec: 3600,
-            connection_test: false,
-            pool_size: (num_cpus::get() * 2) as u32
-        };
+fn builder_sessionsrv_config() -> hab_db::config::DataStoreCfg {
+    let config = hab_db::config::DataStoreCfg {
+        host: IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
+        port: 5432,
+        user: String::from("hab"),
+        password: None,
+        database: String::from("builder_sessionsrv"),
+        connection_retry_ms: 300,
+        connection_timeout_sec: 3600,
+        connection_test: false,
+        pool_size: (num_cpus::get() * 2) as u32,
+    };
 
-        config
-    }
+    config
+}
