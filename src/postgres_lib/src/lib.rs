@@ -15,10 +15,13 @@ extern crate r2d2_postgres;
 extern crate num_cpus;
 use std::net::{Ipv4Addr, IpAddr};
 use std::time::Duration;
+use std::error;
+use std::thread;
 
 use postgres::{Connection};
 use r2d2_postgres::{PostgresConnectionManager, TlsMode};
-
+use postgres::params::IntoConnectParams;
+use r2d2::ManageConnection;
 
 pub fn create_session(token: String,
                       extern_id: u64,
@@ -66,7 +69,7 @@ pub fn create_real_data_store() {
     let config = builder_sessionsrv_config();
 
     let pool_config_builder =
-        r2d2::Config::<(), r2d2_postgres::Error>::builder()
+        r2d2::Config::<postgres::Connection, r2d2_postgres::Error>::builder()
 				    .pool_size(config.pool_size)
              .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
 
@@ -80,8 +83,34 @@ println!("================");
 println!("two");
 println!("{:?}", pool_config);
 
-     let manager = PostgresConnectionManager::new(config, TlsMode::None);
+//     let manager = PostgresConnectionManager::new(&config, TlsMode::None);
+     let manager = PostgresConnectionManager::new(&config, TlsMode::None).unwrap();
 
+println!("================");
+println!("three");
+println!("{:?}", manager);
+
+let pool = r2d2::Pool::new(pool_config, manager);
+println!("================");
+println!("three");
+println!("{:?}", pool);
+
+//let my_thing: () = manager;
+
+//    match r2d2::Pool::new(pool_config, manager) {
+//		Ok(pool) => {
+//        println!("{:?}", pool);
+//		 }
+//		Err(e) => {
+//       println!("ERRORZ");
+//			error!("Error initializing connection pool to Postgres, will retry: {}",
+//				 e)
+//    }
+//}
+
+//println!("================");
+//println!("four");
+//println!("{:?}", pool);
 
 //		let r2_config = r2d2::Config::<(), r2d2_postgres::Error>::default();
 //    let r2_manager = PostgresConnectionManager::new(address, TlsMode::None).unwrap();
