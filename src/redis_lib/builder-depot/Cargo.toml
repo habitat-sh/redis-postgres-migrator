@@ -1,0 +1,71 @@
+[package]
+name = "habitat_depot"
+version = "0.0.0"
+authors = ["Adam Jacob <adam@chef.io>", "Jamie Winsor <reset@chef.io>", "Fletcher Nichol <fnichol@chef.io>", "Joshua Timberman <joshua@chef.io>", "Dave Parfitt <dparfitt@chef.io>"]
+description = "Habitat-Builder package depot"
+build = "build.rs"
+
+[[bin]]
+name = "hab-depot"
+doc = false
+
+[dependencies]
+bodyparser = "*"
+env_logger = "*"
+hyper = "*"
+iron = "*"
+libc = "*"
+lazy_static = "*"
+libarchive = "*"
+log = "*"
+mount = "*"
+openssl = "*"
+persistent = "*"
+protobuf = "*"
+r2d2 = "*"
+r2d2_redis = "*"
+redis = "*"
+regex = "*"
+router = "*"
+rust-crypto = "*"
+rustc-serialize = "*"
+serde = "*"
+serde_json = "*"
+time = "*"
+toml = "*"
+unicase = "*"
+walkdir = "*"
+
+[dependencies.clap]
+version = "*"
+features = [ "suggestions", "color", "unstable" ]
+
+[dependencies.habitat_builder_dbcache_redis]
+path = "../builder-dbcache"
+
+[dependencies.habitat_builder_protocol_redis]
+path = "../builder-protocol"
+
+[dependencies.habitat_core_redis]
+path = "../core"
+
+[dependencies.habitat_net_redis]
+path = "../net"
+
+[dependencies.urlencoded]
+git = "https://github.com/habitat-sh/urlencoded.git"
+branch = "habitat"
+
+[dependencies.zmq]
+git = "https://github.com/erickt/rust-zmq.git"
+branch = "release/v0.8"
+
+[build-dependencies]
+serde_codegen = "*"
+
+[dev-dependencies]
+url = "*"
+uuid = "*"
+
+[features]
+functional = []
