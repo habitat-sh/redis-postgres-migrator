@@ -1,0 +1,44 @@
+[package]
+name = "habitat_builder_originsrv"
+version = "0.0.0"
+authors = ["Adam Jacob <adam@chef.io>", "Jamie Winsor <reset@chef.io>", "Fletcher Nichol <fnichol@chef.io>", "Joshua Timberman <joshua@chef.io>", "Dave Parfitt <dparfitt@chef.io>"]
+description = "Habitat-Builder Origin Server"
+build = "../bldr-build.rs"
+workspace = "../../"
+
+[[bin]]
+name = "bldr-origin-srv"
+doc = false
+
+[dependencies]
+env_logger = "*"
+log = "*"
+protobuf = "*"
+serde = "1.0.3"
+serde_derive = "*"
+toml = { version = "*", features = ["serde"], default-features = false }
+postgres = "*"
+r2d2 = "*"
+
+[dependencies.clap]
+version = "*"
+features = [ "suggestions", "color", "unstable" ]
+
+[dependencies.habitat_core]
+path = "../core"
+
+[dependencies.habitat_builder_db]
+path = "../builder-db"
+
+[dependencies.habitat_builder_protocol]
+path = "../builder-protocol"
+
+[dependencies.habitat_net]
+path = "../net"
+
+[dependencies.zmq]
+git = "https://github.com/erickt/rust-zmq"
+branch = "release/v0.8"
+
+[features]
+functional = []

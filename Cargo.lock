@@ -195,6 +195,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "habitat_builder_originsrv"
+version = "0.0.0"
+dependencies = [
+ "clap 2.24.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "env_logger 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "habitat_builder_db 0.0.0",
+ "habitat_builder_protocol 0.0.0",
+ "habitat_core 0.0.0",
+ "habitat_net 0.0.0",
+ "log 0.3.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "postgres 0.14.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "protobuf 1.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "r2d2 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "toml 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "zmq 0.8.1 (git+https://github.com/erickt/rust-zmq?branch=release/v0.8)",
+]
+
+[[package]]
 name = "habitat_builder_protocol"
 version = "0.0.0"
 dependencies = [
@@ -653,6 +673,7 @@ name = "postgres_lib"
 version = "0.1.0"
 dependencies = [
  "habitat_builder_db 0.0.0",
+ "habitat_builder_originsrv 0.0.0",
  "habitat_builder_protocol 0.0.0",
  "habitat_builder_sessionsrv 0.0.0",
  "habitat_core 0.0.0",

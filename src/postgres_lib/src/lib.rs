@@ -2,10 +2,13 @@ extern crate habitat_builder_sessionsrv as hab_sessionsrv;
 extern crate habitat_builder_protocol as protocol;
 extern crate habitat_core as hab_core;
 extern crate habitat_net as hab_net;
+extern crate habitat_builder_originsrv as hab_originsrv;
+
 #[macro_use]
 extern crate habitat_builder_db as hab_db;
 
 use hab_sessionsrv::data_store::DataStore as sessionsrv_data_store;
+use hab_originsrv::data_store::DataStore as originsrv_data_store;
 
 use protocol::sessionsrv::Session;
 use hab_db::pool::Pool;
@@ -74,6 +77,19 @@ pub fn create_sessionsrv_data_store() -> sessionsrv_data_store {
                                     pool: pool
                                 };
     sessionsrv_data_store
+}
+
+pub fn create_originsrv_data_store() -> originsrv_data_store {
+    let originsrv_config = data_store_config("builder_originsrv");
+    let pool = create_pool(originsrv_config);
+
+    let ap = pool.clone();
+
+    let originsrv_data_store = originsrv_data_store {
+                                   pool: pool,
+                                   async: hab_db::async::AsyncServer::new(ap)
+                               };
+    originsrv_data_store
 }
 
 fn data_store_config(database_name: &str) -> hab_db::config::DataStoreCfg {
