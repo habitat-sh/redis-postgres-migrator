@@ -4,10 +4,8 @@ extern crate habitat_core as hab_core;
 extern crate habitat_net as hab_net;
 #[macro_use]
 extern crate habitat_builder_db as hab_db;
-extern crate habitat_builder_originsrv as hab_originsrv;
 
 use hab_sessionsrv::data_store::DataStore as sessionsrv_data_store;
-use hab_originsrv::data_store::Datastore as originsrv_data_store;
 
 use protocol::sessionsrv::Session;
 use hab_db::pool::Pool;
