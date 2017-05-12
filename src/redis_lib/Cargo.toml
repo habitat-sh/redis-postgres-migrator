@@ -22,6 +22,9 @@ path = "./builder-dbcache"
 [dependencies.habitat_builder_protocol_redis]
 path = "./builder-protocol"
 
+[dependencies.habitat_builder_vault]
+path = "./builder-vault"
+
 [dependencies.habitat_core_redis]
 path = "./core"
 
