@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate habitat_core as hab_core;
+extern crate habitat_core_redis as hab_core;
 extern crate habitat_depot as depot;
-extern crate habitat_net as hab_net;
+extern crate habitat_net_redis as hab_net;
 
 #[macro_use]
 extern crate clap;
