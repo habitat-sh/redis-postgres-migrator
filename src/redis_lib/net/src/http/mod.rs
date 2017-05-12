@@ -17,22 +17,6 @@ pub mod headers;
 pub mod middleware;
 pub mod rendering;
 
-use hyper::status::StatusCode;
+//use hyper::status::StatusCode;
 use protocol::net::ErrCode;
 
-pub fn net_err_to_http(err: ErrCode) -> StatusCode {
-    match err {
-        ErrCode::BUG => StatusCode::InternalServerError,
-        ErrCode::TIMEOUT => StatusCode::GatewayTimeout,
-        ErrCode::REMOTE_REJECTED => StatusCode::NotAcceptable,
-        ErrCode::BAD_REMOTE_REPLY => StatusCode::BadGateway,
-        ErrCode::ENTITY_NOT_FOUND => StatusCode::NotFound,
-        ErrCode::NO_SHARD => StatusCode::ServiceUnavailable,
-        ErrCode::ACCESS_DENIED => StatusCode::Unauthorized,
-        ErrCode::SESSION_EXPIRED => StatusCode::Unauthorized,
-        ErrCode::ENTITY_CONFLICT => StatusCode::Conflict,
-        ErrCode::ZMQ => StatusCode::ServiceUnavailable,
-        ErrCode::DATA_STORE => StatusCode::ServiceUnavailable,
-        ErrCode::AUTH_SCOPE => StatusCode::Forbidden,
-    }
-}

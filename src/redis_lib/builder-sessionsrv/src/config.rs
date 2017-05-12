@@ -86,10 +86,10 @@ impl ConfigFile for Config {
         try!(toml.parse_into("cfg.github_admin_team", &mut cfg.github_admin_team));
         try!(toml.parse_into("cfg.github.url", &mut cfg.github_url));
         if !try!(toml.parse_into("cfg.github.client_id", &mut cfg.github_client_id)) {
-            return Err(Error::from(hab_net::Error::RequiredConfigField("github.client_id")));
+            //return Err(Error::from(hab_net::Error::RequiredConfigField("github.client_id")));
         }
         if !try!(toml.parse_into("cfg.github.client_secret", &mut cfg.github_client_secret)) {
-            return Err(Error::from(hab_net::Error::RequiredConfigField("github.client_secret")));
+//            return Err(Error::from(hab_net::Error::RequiredConfigField("github.client_secret")));
         }
         Ok(cfg)
     }

@@ -148,11 +148,6 @@ pub fn session_create(req: &mut Envelope,
     }
     let mut session: proto::Session = account.into();
     session.set_token(session_token.take_token());
-    if let Some(err) = set_features(&state, &mut session).err() {
-        // JW TODO: handle this and reply with a partial auth (sans features) if they can't be
-        // obtained instead of outputting an error
-        error!("unable to set features, {}", err);
-    }
     try!(req.reply_complete(sock, &session));
     Ok(())
 }
@@ -168,11 +163,6 @@ pub fn session_get(req: &mut Envelope,
                 state.datastore.accounts.find(&token.get_owner_id()).unwrap();
             let mut session: proto::Session = account.into();
             session.set_token(token.take_token());
-            if let Some(err) = set_features(&state, &mut session).err() {
-                // JW TODO: handle this and reply with a partial auth (sans features) if they can't
-                // be obtained instead of outputting an error
-                error!("unable to set features, {}", err);
-            }
             try!(req.reply_complete(sock, &session));
         }
         Err(dbcache::Error::EntityNotFound) => {
@@ -189,27 +179,3 @@ pub fn session_get(req: &mut Envelope,
 }
 
 // Determine permissions and toggle feature flags on for the given Sesssion
-fn set_features(state: &ServerState, session: &mut proto::Session) -> Result<()> {
-    let mut flags = FeatureFlags::empty();
-    // Initialize some empty flags in case we fail to obtain teams from remote
-    session.set_flags(flags.bits());
-    let teams = try!(state.github.teams(session.get_token()));
-    for team in teams {
-        if team.id != 0 && team.id == state.admin_team {
-            debug!("Granting feature flag={:?} for team={:?}",
-                   privilege::ADMIN,
-                   team.name);
-            flags.insert(privilege::ADMIN);
-            continue;
-        }
-        if let Some(raw_flags) = state.datastore.features.flags(team.id).ok() {
-            for raw_flag in raw_flags {
-                let flag = FeatureFlags::from_bits(raw_flag).unwrap();
-                debug!("Granting feature flag={:?} for team={:?}", flag, team.name);
-                flags.insert(flag);
-            }
-        }
-    }
-    session.set_flags(flags.bits());
-    Ok(())
-}
