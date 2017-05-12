@@ -29,11 +29,11 @@ regex = "*"
 router = "*"
 rust-crypto = "*"
 rustc-serialize = "*"
-serde = "*"
-serde_json = "*"
+serde = "0.8.12"
+serde_json = "0.8.2"
 time = "*"
-toml = "*"
-unicase = "*"
+toml = "0.1.29"
+unicase = "1.4.0"
 walkdir = "*"
 
 [dependencies.clap]
@@ -61,7 +61,7 @@ git = "https://github.com/erickt/rust-zmq.git"
 branch = "release/v0.8"
 
 [build-dependencies]
-serde_codegen = "*"
+serde_codegen = "0.8.12"
 
 [dev-dependencies]
 url = "*"

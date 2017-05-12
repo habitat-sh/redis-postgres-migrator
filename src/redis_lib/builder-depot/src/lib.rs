@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate habitat_builder_dbcache as dbcache;
-extern crate habitat_builder_protocol as protocol;
-extern crate habitat_core as hab_core;
-extern crate habitat_net as hab_net;
+extern crate habitat_builder_dbcache_redis as dbcache;
+extern crate habitat_builder_protocol_redis as protocol;
+extern crate habitat_core_redis as hab_core;
+extern crate habitat_net_redis as hab_net;
 extern crate bodyparser;
 extern crate crypto;
 #[macro_use]

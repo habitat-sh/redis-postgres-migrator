@@ -13,11 +13,9 @@ fn main() {
 
 fn read_version() -> String {
     let ver_file = Path::new(&env::var("CARGO_MANIFEST_DIR").unwrap())
-        .parent()
-        .unwrap()
-        .parent()
-        .unwrap()
         .join("VERSION");
+println!("ONE");
+println!("{:?}", ver_file);
     let f = File::open(ver_file).unwrap();
     let mut reader = BufReader::new(f);
     let mut ver = String::new();
