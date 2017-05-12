@@ -34,6 +34,11 @@ pub fn redis_to_postgres(redis_addr: &str, data_store: session_srv::data_store::
                                       account_id.unwrap())
         }
     }
+
+    // This is not used yet, but we will need this line
+    // when importing origins to postgres and any
+    // other items that go into originsrv
+    let originsrv_data_store = postgres_lib::create_originsrv_data_store();
 }
 
 pub fn redis_to_postgres_account(redis_addr: &str,

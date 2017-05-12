@@ -18,6 +18,9 @@ path = "./builder-protocol"
 [dependencies.habitat_builder_db]
 path = "./builder-db"
 
+[dependencies.habitat_builder_originsrv]
+path = "./builder-originsrv"
+
 [dependencies.habitat_core]
 path = "./core"
 
