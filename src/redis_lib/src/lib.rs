@@ -1,6 +1,7 @@
 extern crate habitat_builder_sessionsrv_redis as hab_sessionsrv;
 extern crate habitat_builder_protocol_redis as protocol;
 extern crate habitat_builder_dbcache_redis as dbcache;
+extern crate habitat_builder_vault as vault;
 extern crate r2d2;
 extern crate r2d2_redis;
 

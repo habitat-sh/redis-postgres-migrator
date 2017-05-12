@@ -1,0 +1,41 @@
+[package]
+name = "habitat_builder_vault"
+version = "0.0.0"
+authors = ["Adam Jacob <adam@chef.io>", "Jamie Winsor <reset@chef.io>", "Fletcher Nichol <fnichol@chef.io>", "Joshua Timberman <joshua@chef.io>", "Dave Parfitt <dparfitt@chef.io>"]
+description = "Habitat-Builder Vault Server"
+workspace = "../../"
+
+[[bin]]
+name = "bldr-vault"
+doc = false
+
+[dependencies]
+env_logger = "*"
+log = "*"
+protobuf = "*"
+redis = "*"
+rustc-serialize = "*"
+toml = "0.1.29"
+
+[dependencies.clap]
+version = "*"
+features = [ "suggestions", "color", "unstable" ]
+
+[dependencies.zmq]
+git = "https://github.com/erickt/rust-zmq.git"
+branch = "release/v0.8"
+
+[dependencies.habitat_core_redis]
+path = "../core"
+
+[dependencies.habitat_builder_dbcache_redis]
+path = "../builder-dbcache"
+
+[dependencies.habitat_builder_protocol_redis]
+path = "../builder-protocol"
+
+[dependencies.habitat_net_redis]
+path = "../net"
+
+[features]
+functional = []
