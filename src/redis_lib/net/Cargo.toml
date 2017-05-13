@@ -7,8 +7,6 @@ workspace = "../../"
 [dependencies]
 bitflags = "*"
 fnv = "*"
-hyper = "0.9.10"
-iron = "0.4.0"
 lazy_static = "*"
 libc = "*"
 log = "*"

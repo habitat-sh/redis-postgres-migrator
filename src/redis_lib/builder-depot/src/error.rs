@@ -22,7 +22,6 @@ use dbcache;
 use hab_core;
 use hab_core::package::{self, Identifiable};
 use hab_net;
-use hyper;
 use redis;
 
 #[derive(Debug)]
@@ -31,7 +30,6 @@ pub enum Error {
     DataStore(dbcache::Error),
     HabitatCore(hab_core::Error),
     HabitatNet(hab_net::Error),
-    HTTP(hyper::status::StatusCode),
     InvalidPackageIdent(String),
     IO(io::Error),
     NoXFilename,
@@ -50,7 +48,6 @@ impl fmt::Display for Error {
             Error::DataStore(ref e) => format!("DataStore error, {}", e),
             Error::HabitatCore(ref e) => format!("{}", e),
             Error::HabitatNet(ref e) => format!("{}", e),
-            Error::HTTP(ref e) => format!("{}", e),
             Error::InvalidPackageIdent(ref e) => {
                 format!("Invalid package identifier: {:?}. A valid identifier is in the form \
                          origin/name (example: acme/redis)",
@@ -87,7 +84,6 @@ impl error::Error for Error {
             Error::DataStore(ref err) => err.description(),
             Error::HabitatCore(ref err) => err.description(),
             Error::HabitatNet(ref err) => err.description(),
-            Error::HTTP(_) => "Received an HTTP error",
             Error::InvalidPackageIdent(_) => {
                 "Package identifiers must be in origin/name format (example: acme/redis)"
             }

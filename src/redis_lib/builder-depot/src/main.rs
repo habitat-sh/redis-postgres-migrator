@@ -42,10 +42,6 @@ fn main() {
         Ok(result) => result,
         Err(e) => return exit_with(e, 1),
     };
-    match dispatch(config, &matches) {
-        Ok(_) => std::process::exit(0),
-        Err(e) => exit_with(e, 1),
-    }
 }
 
 fn app<'a, 'b>() -> clap::App<'a, 'b> {
@@ -106,44 +102,16 @@ fn config_from_args(matches: &clap::ArgMatches) -> Result<Config> {
     Ok(config)
 }
 
-fn dispatch(config: Config, matches: &clap::ArgMatches) -> Result<()> {
-    match matches.subcommand_name() {
-        Some("start") => start(config),
-        Some("repair") => repair(config),
-        Some(cmd @ "channel") => {
-            let args = matches.subcommand_matches(cmd).unwrap();
-            match args.subcommand_name() {
-                Some(cmd @ "create") => {
-                    let args = args.subcommand_matches(cmd).unwrap();
-                    let name = args.value_of("channel").unwrap();
-                    channel_create(name, config)
-                }
-                Some("list") => channel_list(config),
-                Some(cmd) => {
-                    debug!("Dispatch failed, no match for command: {:?}", cmd);
-                    Ok(())
-                }
-                None => Ok(()),
-            }
-        }
-        Some(cmd) => {
-            debug!("Dispatch failed, no match for command: {:?}", cmd);
-            Ok(())
-        }
-        None => Ok(()),
-    }
-}
-
 /// Starts the depot server.
 ///
 /// # Failures
 ///
 /// * Fails if the depot server fails to start - canot bind to the port, etc.
-fn start(config: Config) -> Result<()> {
-    println!("Starting package Depot at {}", &config.path);
-    println!("Depot listening on {}", &config.listen_addr);
-    server::run(config)
-}
+//fn start(config: Config) -> Result<()> {
+//    println!("Starting package Depot at {}", &config.path);
+//    println!("Depot listening on {}", &config.listen_addr);
+//    server::run(config)
+//}
 
 /// Analyzes the integrity of the depot's metadata by comparing the metadata with the packages
 /// on disk. If a package is found on disk that is not present in the metadata it is added to the

@@ -129,18 +129,18 @@ impl Application for Server {
 
     fn run(&mut self) -> Result<()> {
         try!(self.be_sock.bind(BE_LISTEN_ADDR));
-        let (datastore, gh, admin_team) = {
-            let cfg = self.config.read().unwrap();
-            let ds = DataStore::start(cfg.deref());
-            let gh = GitHubClient::new(cfg.deref());
-            (ds, gh, cfg.github_admin_team)
-        };
-        let cfg = self.config.clone();
-        let init_state = ServerState::new(datastore, gh, admin_team);
-        let sup: Supervisor<Worker> = Supervisor::new(cfg, init_state);
-        try!(sup.start());
-        try!(self.connect());
-        try!(zmq::proxy(&mut self.router.socket, &mut self.be_sock));
+//        let (datastore, gh, admin_team) = {
+//            let cfg = self.config.read().unwrap();
+//            let ds = DataStore::start(cfg.deref());
+//            let gh = GitHubClient::new(cfg.deref());
+ //           (ds, gh, cfg.github_admin_team)
+//        };
+//        let cfg = self.config.clone();
+//        let init_state = ServerState::new(datastore, gh, admin_team);
+//        let sup: Supervisor<Worker> = Supervisor::new(cfg, init_state);
+//        try!(sup.start());
+//        try!(self.connect());
+//        try!(zmq::proxy(&mut self.router.socket, &mut self.be_sock));
         Ok(())
     }
 }

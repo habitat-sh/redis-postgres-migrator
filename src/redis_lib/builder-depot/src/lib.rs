@@ -16,30 +16,23 @@ extern crate habitat_builder_dbcache_redis as dbcache;
 extern crate habitat_builder_protocol_redis as protocol;
 extern crate habitat_core_redis as hab_core;
 extern crate habitat_net_redis as hab_net;
-extern crate bodyparser;
 extern crate crypto;
 #[macro_use]
-extern crate hyper;
-extern crate iron;
 #[macro_use]
 extern crate lazy_static;
 extern crate libc;
 #[macro_use]
 extern crate log;
-extern crate mount;
-extern crate persistent;
 extern crate protobuf;
 extern crate r2d2;
 extern crate r2d2_redis;
 extern crate redis;
 #[macro_use]
-extern crate router;
 extern crate rustc_serialize;
 extern crate serde_json;
 extern crate time;
 extern crate toml;
 extern crate unicase;
-extern crate urlencoded;
 extern crate walkdir;
 extern crate zmq;
 
@@ -59,7 +52,6 @@ use crypto::sha2::Sha256;
 use crypto::digest::Digest;
 use hab_core::package::{Identifiable, PackageArchive};
 use hab_net::server::NetIdent;
-use iron::typemap;
 
 use data_store::DataStore;
 
@@ -123,10 +115,6 @@ impl Depot {
     fn packages_path(&self) -> PathBuf {
         Path::new(&self.config.path).join("pkgs")
     }
-}
-
-impl typemap::Key for Depot {
-    type Value = Self;
 }
 
 impl NetIdent for Depot {}

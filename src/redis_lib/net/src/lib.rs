@@ -17,8 +17,8 @@ extern crate bitflags;
 extern crate fnv;
 extern crate habitat_builder_protocol_redis as protocol;
 #[macro_use]
-extern crate hyper;
-extern crate iron;
+//extern crate hyper;
+//extern crate iron;
 #[macro_use]
 extern crate lazy_static;
 extern crate libc;
