@@ -1,5 +1,5 @@
 [package]
-name = "redis-postgres-migrator"
+name = "redis_postgres_migrator"
 version = "0.1.0"
 authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
 
@@ -15,10 +15,11 @@ path = "./src/redis_lib/"
 [dependencies.postgres_lib]
 path = "./src/postgres_lib/"
 
+[dependencies.habitat_builder_originsrv]
+path = "./src/postgres_lib/builder-originsrv"
+
+[dependencies.habitat_builder_protocol]
+path = "./src/postgres_lib/builder-protocol"
+
 [dependencies.habitat_builder_sessionsrv]
 path = "./src/postgres_lib/builder-sessionsrv"
-
-
-
-
-
