@@ -99,7 +99,7 @@ pub fn get_package_idents_by_origin(redis_addr: &str,
     create_depot_datastore(redis_addr)
         .packages
         .index
-        .list(format!("{}/", origin).as_str(), 0, -1)
+        .list(origin, 0, -1)
         .expect("unable to get packages from origin")
 }
 
@@ -114,7 +114,8 @@ pub fn get_package_by_ident(redis_addr: &str,
 
 fn create_depot_datastore(redis_addr: &str) -> depot_datastore {
     let mut config = depot::Config::default();
-    config.datastore_addr = net::SocketAddrV4::from_str(redis_addr).unwrap();
+    config.datastore_addr =
+        net::SocketAddrV4::from_str(redis_addr.replace("redis://", "").as_str()).expect("bad address");
     depot_datastore::open(&config).unwrap()
 }
 

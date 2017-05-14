@@ -45,6 +45,7 @@ impl PackageMigrator {
         println!("migrating packages for origin:{}", redis_origin.get_name());
         for ident in redis_lib::get_package_idents_by_origin(self.redis_uri.as_str(),
                                                              redis_origin.get_name()) {
+            println!("migrating package :{}", ident.to_string());
             let package = redis_lib::get_package_by_ident(self.redis_uri.as_str(), ident);
             let mut opc = protocol::originsrv::OriginPackageCreate::new();
             opc.set_checksum(package.get_checksum().to_string());
