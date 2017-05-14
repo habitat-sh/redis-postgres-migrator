@@ -53,6 +53,20 @@ pub fn create_account(data_store: sessionsrv_data_store,
     account
 }
 
+pub fn create_origin(data_store: originsrv_data_store,
+                     name: &str,
+                     owner_id: u64,
+                     owner_name: &str)
+                     -> Option<protocol::originsrv::Origin> {
+    let mut oc = protocol::originsrv::OriginCreate::new();
+    oc.set_name(name.to_string());
+    oc.set_owner_id(owner_id);
+    oc.set_owner_name(owner_name.to_string());
+    data_store
+        .create_origin(&oc)
+        .expect("error saving origin")
+}
+
 pub fn get_account(data_store: sessionsrv_data_store,
                    account_name: &str)
                    -> std::option::Option<protocol::sessionsrv::Account> {
@@ -63,7 +77,12 @@ pub fn get_account(data_store: sessionsrv_data_store,
     account
 }
 
-pub fn create_test_data_store() -> sessionsrv_data_store {
+pub fn create_test_originsrv_data_store() -> originsrv_data_store {
+    let ds = datastore_test!(originsrv_data_store);
+    ds
+}
+
+pub fn create_test_sessionsrv_data_store() -> sessionsrv_data_store {
     let ds = datastore_test!(sessionsrv_data_store);
     ds
 }
@@ -73,9 +92,7 @@ pub fn create_sessionsrv_data_store() -> sessionsrv_data_store {
 
     let pool = create_pool(sessionsrv_config);
 
-    let sessionsrv_data_store = sessionsrv_data_store {
-                                    pool: pool
-                                };
+    let sessionsrv_data_store = sessionsrv_data_store { pool: pool };
     sessionsrv_data_store
 }
 
@@ -86,9 +103,9 @@ pub fn create_originsrv_data_store() -> originsrv_data_store {
     let ap = pool.clone();
 
     let originsrv_data_store = originsrv_data_store {
-                                   pool: pool,
-                                   async: hab_db::async::AsyncServer::new(ap)
-                               };
+        pool: pool,
+        async: hab_db::async::AsyncServer::new(ap),
+    };
     originsrv_data_store
 }
 
@@ -108,14 +125,17 @@ fn data_store_config(database_name: &str) -> hab_db::config::DataStoreCfg {
     config
 }
 
-fn create_pool_config_builder(config: hab_db::config::DataStoreCfg) -> r2d2::config::Builder<postgres::Connection, r2d2_postgres::Error> {
+fn create_pool_config_builder
+    (config: hab_db::config::DataStoreCfg)
+     -> r2d2::config::Builder<postgres::Connection, r2d2_postgres::Error> {
     let pool_builder = r2d2::Config::<postgres::Connection, r2d2_postgres::Error>::builder()
         .pool_size(config.pool_size)
         .connection_timeout(Duration::from_secs(config.connection_timeout_sec));
     pool_builder
 }
 
-fn r2d2_pool(config: hab_db::config::DataStoreCfg) -> r2d2::Pool<r2d2_postgres::PostgresConnectionManager> {
+fn r2d2_pool(config: hab_db::config::DataStoreCfg)
+             -> r2d2::Pool<r2d2_postgres::PostgresConnectionManager> {
     let pool_config_builder = create_pool_config_builder(config.clone());
     let pool_config = pool_config_builder.build();
 
@@ -130,8 +150,8 @@ fn create_pool(config: hab_db::config::DataStoreCfg) -> hab_db::pool::Pool {
     let r2d2_pool = r2d2_pool(config);
 
     let pool = hab_db::pool::Pool {
-                   inner: r2d2_pool,
-                   shards: shards
-               };
+        inner: r2d2_pool,
+        shards: shards,
+    };
     pool
 }

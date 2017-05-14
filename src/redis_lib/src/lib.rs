@@ -7,7 +7,9 @@ extern crate r2d2_redis;
 
 use std::ops::Deref;
 use std::sync::Arc;
+use dbcache::data_store::Pool;
 use dbcache::InstaSet;
+use vault::data_store::DataStore as vault_datastore;
 use hab_sessionsrv::data_store::{DataStore, AccountTable};
 
 use self::r2d2_redis::RedisConnectionManager;
@@ -42,6 +44,15 @@ pub fn create_account(redis_addr: &str,
     account
 }
 
+pub fn create_origin(redis_addr: &str, name: &str, owner_id: u64) -> protocol::vault::Origin {
+    let mut origin = protocol::vault::Origin::new();
+    origin.set_owner_id(owner_id);
+    origin.set_name(name.to_string());
+    let datastore = vault_datastore::init(create_pool(redis_addr));
+    datastore.origins.write(&mut origin);
+    origin
+}
+
 pub fn find_account_by_id(redis_addr: &str, id: String) -> protocol::sessionsrv::Account {
     let pool = create_pool(redis_addr);
     let ds = DataStore::new(pool);
@@ -52,7 +63,13 @@ pub fn find_account_by_id(redis_addr: &str, id: String) -> protocol::sessionsrv:
     account
 }
 
-fn create_pool(redis_addr: &str) -> std::sync::Arc<r2d2::Pool<r2d2_redis::RedisConnectionManager>> {
+pub fn find_origin_by_id(redis_addr: &str, id: u64) -> protocol::vault::Origin {
+    let ds = vault_datastore::init(create_pool(redis_addr));
+    ds.origins.find(&id).unwrap()
+}
+
+pub fn create_pool(redis_addr: &str)
+                   -> std::sync::Arc<r2d2::Pool<r2d2_redis::RedisConnectionManager>> {
     let config = Default::default();
     let manager = RedisConnectionManager::new(redis_addr).unwrap();
     let mut pool = Arc::new(r2d2::Pool::new(config, manager).unwrap());
