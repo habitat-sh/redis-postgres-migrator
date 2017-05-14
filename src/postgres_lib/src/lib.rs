@@ -10,9 +10,11 @@ extern crate habitat_builder_db as hab_db;
 use hab_sessionsrv::data_store::DataStore as sessionsrv_data_store;
 use hab_originsrv::data_store::DataStore as originsrv_data_store;
 
+use hab_core::package::PackageIdent;
 use protocol::sessionsrv::Session;
 use hab_db::pool::Pool;
 use std::ops::Deref;
+use std::str::FromStr;
 
 extern crate postgres;
 extern crate r2d2;
@@ -65,6 +67,16 @@ pub fn create_origin(data_store: originsrv_data_store,
     data_store
         .create_origin(&oc)
         .expect("error saving origin")
+}
+
+pub fn get_package_by_ident(data_store: originsrv_data_store,
+                            ident: &str)
+                            -> Option<protocol::originsrv::OriginPackage> {
+    let mut opg = protocol::originsrv::OriginPackageGet::new();
+    opg.set_ident(PackageIdent::from_str(ident).unwrap().into());
+    data_store
+        .get_origin_package(&opg)
+        .expect("unable to get package from postgres")
 }
 
 pub fn get_account(data_store: sessionsrv_data_store,

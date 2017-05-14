@@ -5,12 +5,16 @@ authors = ["Nell Shamrell <nellshamrell@gmail.com>"]
 
 [dependencies]
 regex = "*"
+protobuf = "*"
 
 [dependencies.redis_extraction]
 path = "./src/redis_extraction"
 
 [dependencies.redis_lib]
 path = "./src/redis_lib/"
+
+[dependencies.habitat_builder_protocol_redis]
+path = "./src/redis_lib/builder-protocol"
 
 [dependencies.postgres_lib]
 path = "./src/postgres_lib/"
@@ -23,3 +27,6 @@ path = "./src/postgres_lib/builder-protocol"
 
 [dependencies.habitat_builder_sessionsrv]
 path = "./src/postgres_lib/builder-sessionsrv"
+
+[dependencies.habitat_core]
+path = "./src/postgres_lib/core"

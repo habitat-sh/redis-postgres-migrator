@@ -13,8 +13,11 @@ fn main() {
     let originsrv_data_store = postgres_lib::create_originsrv_data_store();
 
     migrators::account::redis_to_postgres(redis_address, sessionsrv_data_store.clone());
-    let m = migrators::origin::OriginMigrator::new(redis_address.to_string(),
-                                                   originsrv_data_store,
-                                                   sessionsrv_data_store.clone());
-    m.migrate();
+    migrators::origin::OriginMigrator::new(redis_address.to_string(),
+                                           originsrv_data_store.clone(),
+                                           sessionsrv_data_store.clone())
+            .migrate();
+    migrators::package::PackageMigrator::new(redis_address.to_string(),
+                                             originsrv_data_store.clone())
+            .migrate();
 }
