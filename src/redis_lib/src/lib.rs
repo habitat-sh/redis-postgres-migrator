@@ -19,6 +19,9 @@ use vault::data_store::DataStore as vault_datastore;
 use hab_sessionsrv::data_store::{DataStore, AccountTable};
 use hab_core::package::{FromArchive, PackageArchive};
 
+use std::fs::{self, File};
+use std::io::{Read, Write, BufWriter};
+
 use self::r2d2_redis::RedisConnectionManager;
 use std::str::FromStr;
 
@@ -110,6 +113,40 @@ pub fn get_package_by_ident(redis_addr: &str,
         .packages
         .find(&ident)
         .expect("unable to get package from redis")
+}
+
+pub fn create_origin_key(origin: &str, revision: &str, key_content: String, redis_addr: &str) {
+    let mut depot_config = depot::Config::default();
+    depot_config.datastore_addr =
+        net::SocketAddrV4::from_str(redis_addr.replace("redis://", "").as_str()).expect("bad address");
+    let depot = depot::Depot::new(depot_config).unwrap();
+
+    let origin_key_file = depot.key_path(origin, revision);
+
+    write_string_to_file(&origin_key_file, key_content);
+
+    depot.datastore.origin_keys.write(&origin, &revision);
+}
+
+pub fn list_origin_keys(origin: &str, redis_addr: &str) {
+    let mut depot_config = depot::Config::default();
+    depot_config.datastore_addr =
+        net::SocketAddrV4::from_str(redis_addr.replace("redis://", "").as_str()).expect("bad address");
+    let depot = depot::Depot::new(depot_config).unwrap();
+    let keys_list = depot.datastore.origin_keys.all(origin).unwrap();
+println!("here are the keys! {:?}", keys_list);
+}
+
+fn write_string_to_file(filename: &PathBuf, body: String) -> Result<bool, depot::Error> {
+    let path = filename.parent().unwrap();
+    try!(fs::create_dir_all(path));
+    let tempfile = format!("{}.tmp", filename.to_string_lossy());
+    let f = try!(File::create(&tempfile));
+    let mut writer = BufWriter::new(&f);
+    try!(writer.write_all(body.as_bytes()));
+//    info!("File added to Depot at {}", filename.to_string_lossy());
+    try!(fs::rename(&tempfile, &filename));
+    Ok(true)
 }
 
 fn create_depot_datastore(redis_addr: &str) -> depot_datastore {

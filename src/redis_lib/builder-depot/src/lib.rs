@@ -55,6 +55,7 @@ use hab_net::server::NetIdent;
 
 use data_store::DataStore;
 
+#[derive(Debug)]
 pub struct Depot {
     pub config: Config,
     pub datastore: DataStore,
@@ -96,7 +97,7 @@ impl Depot {
                           ident.release().unwrap()))
     }
 
-    fn key_path(&self, key: &str, rev: &str) -> PathBuf {
+    pub fn key_path(&self, key: &str, rev: &str) -> PathBuf {
         let mut digest = Sha256::new();
         let mut output = [0; 64];
         let key_with_rev = format!("{}-{}.pub", key, rev);
