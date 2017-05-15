@@ -17,6 +17,10 @@ fn main() {
                                            originsrv_data_store.clone(),
                                            sessionsrv_data_store.clone())
             .migrate();
+    migrators::invitation::InvitationMigrator::new(redis_address.to_string(),
+                                           originsrv_data_store.clone(),
+                                           sessionsrv_data_store.clone())
+            .migrate();
     migrators::package::PackageMigrator::new(redis_address.to_string(),
                                              originsrv_data_store.clone())
             .migrate();
