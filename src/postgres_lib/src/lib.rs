@@ -131,6 +131,13 @@ pub fn create_originsrv_data_store() -> originsrv_data_store {
     originsrv_data_store
 }
 
+pub fn get_origin_keys_by_origin(data_store: originsrv_data_store, origin_id: u64) -> protocol::originsrv::OriginPublicKeyListResponse {
+    let mut request = protocol::originsrv::OriginPublicKeyListRequest::new();
+    request.set_origin_id(origin_id);
+    let keys = data_store.list_origin_public_keys_for_origin(&request);
+    keys.unwrap()
+}
+
 fn data_store_config(database_name: &str) -> hab_db::config::DataStoreCfg {
     let config = hab_db::config::DataStoreCfg {
         host: IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),

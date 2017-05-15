@@ -26,6 +26,7 @@ use redis::{self, Commands, Pipeline, PipelineCommands};
 
 use error::{Error, Result};
 
+#[derive(Debug)]
 pub struct DataStore {
     pub pool: Arc<ConnectionPool>,
     pub packages: PackagesTable,
@@ -71,6 +72,8 @@ impl DataStore {
 }
 
 /// Contains metadata entries for each package known by the Depot
+
+#[derive(Debug)]
 pub struct PackagesTable {
     pub index: PackagesIndex,
     pool: Arc<ConnectionPool>,
@@ -118,6 +121,8 @@ impl BasicSet for PackagesTable {
 
 /// Contains an index of package identifiers to easily find the latest version/release of a
 /// specified package.
+
+#[derive(Debug)]
 pub struct PackagesIndex {
     pool: Arc<ConnectionPool>,
 }
@@ -272,6 +277,8 @@ impl Bucket for PackagesIndex {
 /// Contains a mapping of channel names and the packages found within that channel.
 ///
 /// This is how packages will be "promoted" between environments without duplicating data on disk.
+
+#[derive(Debug)]
 pub struct ChannelsTable {
     pool: Arc<ConnectionPool>,
     pub pkg_channel_idx: PkgChannelIndex,
@@ -342,6 +349,7 @@ impl BasicSet for ChannelsTable {
     type Record = depotsrv::View;
 }
 
+#[derive(Debug)]
 pub struct PkgChannelIndex {
     pool: Arc<ConnectionPool>,
 }
@@ -367,6 +375,7 @@ impl IndexSet for PkgChannelIndex {
     type Value = String;
 }
 
+#[derive(Debug)]
 pub struct ChannelPkgIndex {
     pool: Arc<ConnectionPool>,
 }
@@ -426,6 +435,7 @@ impl IndexSet for ChannelPkgIndex {
     type Value = String;
 }
 
+#[derive(Debug)]
 pub struct OriginKeysTable {
     pool: Arc<ConnectionPool>,
 }
