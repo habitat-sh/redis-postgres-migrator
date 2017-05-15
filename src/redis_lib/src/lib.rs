@@ -21,6 +21,7 @@ use hab_core::package::{FromArchive, PackageArchive};
 
 use std::fs::{self, File};
 use std::io::{Read, Write, BufWriter};
+use std::io::prelude::*;
 
 use self::r2d2_redis::RedisConnectionManager;
 use std::str::FromStr;
@@ -128,13 +129,28 @@ pub fn create_origin_key(origin: &str, revision: &str, key_content: String, redi
     depot.datastore.origin_keys.write(&origin, &revision);
 }
 
-pub fn list_origin_keys(origin: &str, redis_addr: &str) {
+pub fn get_origin_keys_by_origin(origin: &str, redis_addr: &str) -> Vec<protocol::depotsrv::OriginKeyIdent> {
     let mut depot_config = depot::Config::default();
     depot_config.datastore_addr =
         net::SocketAddrV4::from_str(redis_addr.replace("redis://", "").as_str()).expect("bad address");
     let depot = depot::Depot::new(depot_config).unwrap();
-    let keys_list = depot.datastore.origin_keys.all(origin).unwrap();
-println!("here are the keys! {:?}", keys_list);
+    let keys_list = depot.datastore.origin_keys.all(origin);
+
+    keys_list.unwrap()
+}
+
+pub fn get_key_body(location: &str) -> String {
+    let mut file = match File::open(location) {
+        Ok(file) => file,
+        Err(_) => panic!("that key file does not exist"),
+    };
+
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)
+        .ok()
+        .expect("failed to read that key file");
+
+    contents
 }
 
 fn write_string_to_file(filename: &PathBuf, body: String) -> Result<bool, depot::Error> {

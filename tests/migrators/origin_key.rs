@@ -23,9 +23,26 @@ fn test_migrate_origin_key() {
 		postgres_lib::create_origin(ds.clone(), origin.get_name(), 5000, "account_name").unwrap();
 
     let revision = "20160423193732";
-    let origin_key_1 = redis_lib::create_origin_key(origin.get_name(), revision, sample_public_key(), TEST_REDIS_ADDR);
+    let revision_2 = "20160523193732";
 
-    let origin_keys = redis_lib::list_origin_keys(origin.get_name(), TEST_REDIS_ADDR);
+    let origin_key_1 = redis_lib::create_origin_key(origin.get_name(), revision, sample_public_key(), TEST_REDIS_ADDR);
+    let origin_key_2 = redis_lib::create_origin_key(origin.get_name(), revision_2, sample_public_key(), TEST_REDIS_ADDR);
+
+    let mut origin_keys = redis_lib::get_origin_keys_by_origin(origin.get_name(), TEST_REDIS_ADDR);
+
+    // Overriding location for test purposes
+    origin_keys[0].set_location("tests/fixtures/my_origin_1/my_origin_public_key.pub".to_string());
+    origin_keys[1].set_location("tests/fixtures/my_origin_2/my_origin_public_key2.pub".to_string());
+
+    assert_eq!(origin_keys.len(), 2);
+
+    migrators::origin_key::OriginKeyMigrator::new(origin.get_name().to_string(), origin_keys, ds.clone()).migrate();
+
+    let pg_origin_keys = postgres_lib::get_origin_keys_by_origin(ds.clone(), pg_origin.get_id());
+    println!("PIKACHU!!!!");
+    println!("{:?}", pg_origin_keys.get_keys());
+
+    assert_eq!(pg_origin_keys.get_keys().len(), 2);
 }
 
 fn sample_public_key() -> String {
