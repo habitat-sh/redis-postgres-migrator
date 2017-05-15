@@ -46,16 +46,5 @@ impl OriginKeyMigrator {
             self.originsrv_store.create_origin_public_key(&okc);
         }
     }
-
-    fn migrate_origin(&self, id: u64) {
-/*
-        let redis_origin = redis_lib::find_origin_by_id(self.redis_uri.as_str(), id);
-        let pg_origin = self.originsrv_store
-            .get_origin_by_name(redis_origin.get_name())
-            .expect("unable to get origin from postgres")
-            .expect("no origin found in postgres");
-        println!("migrating packages for origin:{}", redis_origin.get_name());
-*/
-    }
 }
 
