@@ -60,6 +60,34 @@ pub fn create_origin(redis_addr: &str, name: &str, owner_id: u64) -> protocol::v
     origin
 }
 
+pub fn create_invitation(redis_addr: &str,
+                         account_id: u64,
+                         account_name: &str,
+                         origin_id: u64,
+                         origin_name: &str,
+                         owner_id: u64)
+                         -> protocol::vault::OriginInvitation {
+    let mut create = protocol::vault::OriginInvitation::new();
+    create.set_account_id(account_id);
+    create.set_account_name(account_name.to_string());
+    create.set_origin_id(origin_id);
+    create.set_origin_name(origin_name.to_string());
+    create.set_owner_id(owner_id);
+    let datastore = vault_datastore::init(create_pool(redis_addr));
+    datastore.origins.invites.write(&mut create);
+    create
+}
+
+pub fn get_invitations_by_origin(redis_addr: &str,
+                                 origin_id: u64)
+                                 -> Vec<protocol::vault::OriginInvitation> {
+    let ds = vault_datastore::init(create_pool(redis_addr));
+    ds.origins
+        .invites
+        .get_by_origin_id(origin_id)
+        .expect("unable to list invitations for origin")
+}
+
 pub fn create_package(redis_addr: &str, hart: PathBuf) -> protocol::depotsrv::Package {
     let mut archive = PackageArchive::new(hart);
     let package = protocol::depotsrv::Package::from_archive(&mut archive).expect("unable to create package from archive");
@@ -114,8 +142,10 @@ pub fn get_package_by_ident(redis_addr: &str,
 
 fn create_depot_datastore(redis_addr: &str) -> depot_datastore {
     let mut config = depot::Config::default();
-    config.datastore_addr =
-        net::SocketAddrV4::from_str(redis_addr.replace("redis://", "").as_str()).expect("bad address");
+    config.datastore_addr = net::SocketAddrV4::from_str(redis_addr
+                                                            .replace("redis://", "")
+                                                            .as_str())
+            .expect("bad address");
     depot_datastore::open(&config).unwrap()
 }
 

@@ -89,6 +89,16 @@ pub fn get_account(data_store: sessionsrv_data_store,
     account
 }
 
+pub fn get_invitations_by_origin(data_store: originsrv_data_store,
+                                 origin_id: u64)
+                                 -> protocol::originsrv::OriginInvitationListResponse {
+    let mut oilr = protocol::originsrv::OriginInvitationListRequest::new();
+    oilr.set_origin_id(origin_id);
+    data_store
+        .list_origin_invitations_for_origin(&oilr)
+        .expect("unable to get invitations from postgres")
+}
+
 pub fn create_test_originsrv_data_store() -> originsrv_data_store {
     let ds = datastore_test!(originsrv_data_store);
     ds
