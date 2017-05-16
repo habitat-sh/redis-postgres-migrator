@@ -99,6 +99,16 @@ pub fn get_invitations_by_origin(data_store: originsrv_data_store,
         .expect("unable to get invitations from postgres")
 }
 
+pub fn get_secret_key_by_origin(data_store: originsrv_data_store,
+                                 origin_name: &str)
+                                 -> Option<protocol::originsrv::OriginSecretKey> {
+    let mut oskg = protocol::originsrv::OriginSecretKeyGet::new();
+    oskg.set_origin(origin_name.to_string());
+    data_store
+        .get_origin_secret_key(&oskg)
+        .expect("unable to get secret keys")
+}
+
 pub fn create_test_originsrv_data_store() -> originsrv_data_store {
     let ds = datastore_test!(originsrv_data_store);
     ds
