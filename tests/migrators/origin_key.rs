@@ -13,7 +13,7 @@ pub fn hart_file(name: &str) -> PathBuf {
 }
 
 #[test]
-fn test_migrate_origin_key() {
+fn test_migrate_public_key() {
     let ds = postgres_lib::create_test_originsrv_data_store();
     ds.setup();
 
