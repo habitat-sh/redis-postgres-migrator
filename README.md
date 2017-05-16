@@ -1,5 +1,15 @@
 # redis-postgres-migrator
 
+# How do I run this?
+
+This is assuming that you have a running Habitat instance of at least 0.22.1.  This also assumes you have copyied a redis store to your new Habitat instance and are running it.
+
+You will need to clone this repo to your new Habitat instance then run 
+
+```
+$ cargo run -- -- "redis://127.0.0.1:6379" 
+```
+
 # What is this?
 
 This is a tool for migrating data from a redis data store (which a system running Habitat 0.12.x would have) to a postgres data store (which a system running the latest release of Habitat would have).
