@@ -52,6 +52,12 @@ fn test_migrate_invitations() {
                                                    redis_origin.get_id(),
                                                    redis_origin.get_name(),
                                                    redis_account_inviter.get_id());
+    let invitation3 = redis_lib::create_invitation(TEST_REDIS_ADDR,
+                                                   5001,
+                                                   pg_account_invitee2.get_name(),
+                                                   redis_origin.get_id(),
+                                                   redis_origin.get_name(),
+                                                   redis_account_inviter.get_id());
 
     migrators::invitation::InvitationMigrator::new(TEST_REDIS_ADDR.to_string(),
                                                    ds.clone(),

@@ -45,6 +45,13 @@ impl SecretKeyMigrator {
         let key = redis_lib::get_secret_key_by_id(self.redis_uri.as_str(), id);
         let redis_origin = redis_lib::find_origin_by_id(self.redis_uri.as_str(),
                                                         key.get_origin_id());
+
+        if postgres_lib::get_secret_key_by_origin(self.originsrv_store.clone(),
+                                                  redis_origin.get_name())
+                   .is_some() {
+            return;
+        }
+
         let pg_origin = self.originsrv_store
             .get_origin_by_name(redis_origin.get_name())
             .expect("unable to get origin from postgres")
@@ -63,6 +70,8 @@ impl SecretKeyMigrator {
         osk.set_origin_id(pg_origin.get_id());
         osk.set_owner_id(account.get_id());
         osk.set_revision(key.get_revision().to_string());
-        self.originsrv_store.create_origin_secret_key(&osk);
+        self.originsrv_store
+            .create_origin_secret_key(&osk)
+            .expect("error adding key");
     }
 }

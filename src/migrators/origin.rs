@@ -40,8 +40,6 @@ impl OriginMigrator {
         let redis_origin = redis_lib::find_origin_by_id(self.redis_uri.as_str(), id);
         if postgres_lib::get_origin_by_name(self.originsrv_store.clone(), redis_origin.get_name())
                .is_some() {
-            println!("Ignoring origin {}. Already migrated.",
-                     redis_origin.get_name());
             return;
         }
         println!("migrating origin:{}", redis_origin.get_name());

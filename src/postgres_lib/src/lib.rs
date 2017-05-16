@@ -90,8 +90,8 @@ pub fn get_account(data_store: sessionsrv_data_store,
 }
 
 pub fn get_origin_by_name(data_store: originsrv_data_store,
-                   origin_name: &str)
-                   -> std::option::Option<protocol::originsrv::Origin> {
+                          origin_name: &str)
+                          -> std::option::Option<protocol::originsrv::Origin> {
     let mut og = protocol::originsrv::OriginGet::new();
     og.set_name(origin_name.to_string());
     data_store.get_origin(&og).expect("cant get origin yo")
@@ -108,8 +108,8 @@ pub fn get_invitations_by_origin(data_store: originsrv_data_store,
 }
 
 pub fn get_secret_key_by_origin(data_store: originsrv_data_store,
-                                 origin_name: &str)
-                                 -> Option<protocol::originsrv::OriginSecretKey> {
+                                origin_name: &str)
+                                -> Option<protocol::originsrv::OriginSecretKey> {
     let mut oskg = protocol::originsrv::OriginSecretKeyGet::new();
     oskg.set_origin(origin_name.to_string());
     data_store
@@ -149,11 +149,25 @@ pub fn create_originsrv_data_store() -> originsrv_data_store {
     originsrv_data_store
 }
 
-pub fn get_origin_keys_by_origin(data_store: originsrv_data_store, origin_id: u64) -> protocol::originsrv::OriginPublicKeyListResponse {
+pub fn get_origin_keys_by_origin(data_store: originsrv_data_store,
+                                 origin_id: u64)
+                                 -> protocol::originsrv::OriginPublicKeyListResponse {
     let mut request = protocol::originsrv::OriginPublicKeyListRequest::new();
     request.set_origin_id(origin_id);
     let keys = data_store.list_origin_public_keys_for_origin(&request);
     keys.unwrap()
+}
+
+pub fn get_origin_key_by_revision(data_store: originsrv_data_store,
+                                  origin: &str,
+                                  revision: &str)
+                                  -> Option<protocol::originsrv::OriginPublicKey> {
+    let mut request = protocol::originsrv::OriginPublicKeyGet::new();
+    request.set_origin(origin.to_string());
+    request.set_revision(revision.to_string());
+    data_store
+        .get_origin_public_key(&request)
+        .expect("failed to get public keys")
 }
 
 fn data_store_config(database_name: &str) -> hab_db::config::DataStoreCfg {

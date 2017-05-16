@@ -89,6 +89,13 @@ fn test_redis_to_postgres_accounts() {
 
     let redis_account2 = redis_lib::create_account(redis_addr, session2);
 
+    let session3 = redis_lib::create_session(String::from("canterbury"),
+                                                64,
+                                                String::from("james.holden@chef.io"),
+                                                String::from("James Holden"));
+
+    let redis_account3 = redis_lib::create_account(redis_addr, session3);
+
     // Set up postgres datastore
     let ds = postgres_lib::create_test_sessionsrv_data_store();
 
