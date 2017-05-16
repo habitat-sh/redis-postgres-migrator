@@ -1,5 +1,6 @@
 use redis_postgres_migrator::migrators;
 use postgres_lib;
+use habitat_builder_protocol as protocol;
 use redis_lib;
 use std::path::PathBuf;
 
@@ -24,17 +25,29 @@ fn test_migrate_public_key() {
 
     let revision = "20160423193732";
     let revision_2 = "20160523193732";
+    let revision_3 = "20160523193733";
 
     let origin_key_1 = redis_lib::create_origin_key(origin.get_name(), revision, sample_public_key(), TEST_REDIS_ADDR);
     let origin_key_2 = redis_lib::create_origin_key(origin.get_name(), revision_2, sample_public_key(), TEST_REDIS_ADDR);
+    let origin_key_3 = redis_lib::create_origin_key(origin.get_name(), revision_3, sample_public_key(), TEST_REDIS_ADDR);
 
     let mut origin_keys = redis_lib::get_origin_keys_by_origin(origin.get_name(), TEST_REDIS_ADDR);
 
     // Overriding location for test purposes
     origin_keys[0].set_location("tests/fixtures/my_origin_1/my_origin_public_key.pub".to_string());
     origin_keys[1].set_location("tests/fixtures/my_origin_2/my_origin_public_key2.pub".to_string());
+    origin_keys[2].set_location("tests/fixtures/my_origin_2/my_origin_public_key2.pub".to_string());
 
-    assert_eq!(origin_keys.len(), 2);
+    assert_eq!(origin_keys.len(), 3);
+
+    //manually migrate one to ensure we can skip already migrated keys
+    let mut okc = protocol::originsrv::OriginPublicKeyCreate::new();
+    okc.set_name(origin_keys[2].get_origin().to_string());
+    okc.set_revision(origin_keys[2].get_revision().to_string());
+    okc.set_origin_id(pg_origin.get_id());
+    okc.set_owner_id(pg_origin.get_owner_id());
+    okc.set_body(redis_lib::get_key_body(origin_keys[2].get_location()).into_bytes());
+    ds.clone().create_origin_public_key(&okc);
 
     migrators::origin_key::OriginKeyMigrator::new(origin.get_name().to_string(), origin_keys, ds.clone()).migrate();
 
@@ -42,7 +55,7 @@ fn test_migrate_public_key() {
     println!("PIKACHU!!!!");
     println!("{:?}", pg_origin_keys.get_keys());
 
-    assert_eq!(pg_origin_keys.get_keys().len(), 2);
+    assert_eq!(pg_origin_keys.get_keys().len(), 3);
 }
 
 fn sample_public_key() -> String {

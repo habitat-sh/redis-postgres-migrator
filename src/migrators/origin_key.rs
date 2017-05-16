@@ -17,7 +17,10 @@ pub struct OriginKeyMigrator {
 }
 
 impl OriginKeyMigrator {
-    pub fn new(origin_name: String, origin_keys: Vec<redis_protocol::depotsrv::OriginKeyIdent>, originsrv_store: originsrv_datastore) -> OriginKeyMigrator {
+    pub fn new(origin_name: String,
+               origin_keys: Vec<redis_protocol::depotsrv::OriginKeyIdent>,
+               originsrv_store: originsrv_datastore)
+               -> OriginKeyMigrator {
         OriginKeyMigrator {
             origin_name: origin_name,
             origin_keys: origin_keys,
@@ -34,6 +37,13 @@ impl OriginKeyMigrator {
             .expect("no origin found in postgres");
 
         for key in origin_keys {
+            if postgres_lib::get_origin_key_by_revision(self.originsrv_store.clone(),
+                                                        pg_origin.get_name(),
+                                                        key.get_revision())
+                       .is_some() {
+                return;
+            }
+
             println!("migrating key {:?}", key);
 
             let mut okc = protocol::originsrv::OriginPublicKeyCreate::new();
@@ -47,4 +57,3 @@ impl OriginKeyMigrator {
         }
     }
 }
-

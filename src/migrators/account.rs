@@ -15,9 +15,7 @@ pub fn redis_to_postgres(redis_addr: &str, data_store: session_srv::data_store::
             let account_id = account_id_string.parse::<u64>();
 
             println!("{:?}", cap);
-            redis_to_postgres_account(redis_addr,
-                                      ds,
-                                      account_id.unwrap())
+            redis_to_postgres_account(redis_addr, ds, account_id.unwrap())
         }
     }
 }
@@ -26,6 +24,10 @@ pub fn redis_to_postgres_account(redis_addr: &str,
                                  data_store: session_srv::data_store::DataStore,
                                  id: u64) {
     let redis_account = redis_lib::find_account_by_id(redis_addr, id.to_string());
+    if postgres_lib::get_account(data_store.clone(), redis_account.get_name()).is_some() {
+        return;
+    }
+    println!("Migrating account {}", redis_account.get_name());
     let config = session_srv::config::Config::default();
 
     let session = postgres_lib::create_session("pretend_session".to_string(),

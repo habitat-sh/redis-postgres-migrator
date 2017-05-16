@@ -45,6 +45,11 @@ impl PackageMigrator {
         println!("migrating packages for origin:{}", redis_origin.get_name());
         for ident in redis_lib::get_package_idents_by_origin(self.redis_uri.as_str(),
                                                              redis_origin.get_name()) {
+            if postgres_lib::get_package_by_ident(self.originsrv_store.clone(), ident.to_string().as_str())
+                   .is_some() {
+                return;
+            }
+
             println!("migrating package :{}", ident.to_string());
             let package = redis_lib::get_package_by_ident(self.redis_uri.as_str(), ident);
             let mut opc = protocol::originsrv::OriginPackageCreate::new();
@@ -60,7 +65,9 @@ impl PackageMigrator {
             opc.set_target("x86_64-linux".to_string());
             opc.set_origin_id(pg_origin.get_id());
             opc.set_owner_id(pg_origin.get_owner_id());
-            self.originsrv_store.create_origin_package(&opc);
+            self.originsrv_store
+                .create_origin_package(&opc)
+                .expect("failed to save package");
         }
     }
 
