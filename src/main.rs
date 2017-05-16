@@ -43,7 +43,8 @@ fn migrate_origin_public_keys(redis_addr: &str) {
 						let redis_origin = redis_lib::find_origin_by_id(redis_addr, origin_id.parse::<u64>().unwrap());
             let origin_keys = redis_lib::get_origin_keys_by_origin(redis_origin.get_name(), redis_addr);
 
-            migrators::origin_key::OriginKeyMigrator::new(redis_origin.get_name().to_string(), origin_keys, originsrv_data_store.clone());
+            migrators::origin_key::OriginKeyMigrator::new(redis_origin.get_name().to_string(), origin_keys, originsrv_data_store.clone())
+                .migrate();
 				}
 		}
 
