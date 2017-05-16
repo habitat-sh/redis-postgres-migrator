@@ -22,8 +22,12 @@ fn main() {
                                            sessionsrv_data_store.clone())
             .migrate();
     migrators::invitation::InvitationMigrator::new(redis_address.to_string(),
-                                           originsrv_data_store.clone(),
-                                           sessionsrv_data_store.clone())
+                                                   originsrv_data_store.clone(),
+                                                   sessionsrv_data_store.clone())
+            .migrate();
+    migrators::secret_key::SecretKeyMigrator::new(redis_address.to_string(),
+                                                  originsrv_data_store.clone(),
+                                                  sessionsrv_data_store.clone())
             .migrate();
     migrators::package::PackageMigrator::new(redis_address.to_string(),
                                              originsrv_data_store.clone())
@@ -36,16 +40,19 @@ fn migrate_origin_public_keys(redis_addr: &str) {
 
     let originsrv_data_store = postgres_lib::create_originsrv_data_store();
 
-		let re = Regex::new(r":(\d+)").unwrap();
-		for x in redis_origins {
-				for cap in re.captures_iter(&x) {
-				    let origin_id = &cap[1];
-						let redis_origin = redis_lib::find_origin_by_id(redis_addr, origin_id.parse::<u64>().unwrap());
-            let origin_keys = redis_lib::get_origin_keys_by_origin(redis_origin.get_name(), redis_addr);
+    let re = Regex::new(r":(\d+)").unwrap();
+    for x in redis_origins {
+        for cap in re.captures_iter(&x) {
+            let origin_id = &cap[1];
+            let redis_origin = redis_lib::find_origin_by_id(redis_addr,
+                                                            origin_id.parse::<u64>().unwrap());
+            let origin_keys = redis_lib::get_origin_keys_by_origin(redis_origin.get_name(),
+                                                                   redis_addr);
 
-            migrators::origin_key::OriginKeyMigrator::new(redis_origin.get_name().to_string(), origin_keys, originsrv_data_store.clone())
-                .migrate();
-				}
-		}
-
+            migrators::origin_key::OriginKeyMigrator::new(redis_origin.get_name().to_string(),
+                                                          origin_keys,
+                                                          originsrv_data_store.clone())
+                    .migrate();
+        }
+    }
 }

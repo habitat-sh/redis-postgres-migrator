@@ -13,6 +13,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use dbcache::BasicSet;
 use dbcache::data_store::Pool;
+use dbcache::IndexSet;
 use dbcache::InstaSet;
 use depot::data_store::DataStore as depot_datastore;
 use vault::data_store::DataStore as vault_datastore;
@@ -92,6 +93,13 @@ pub fn get_invitations_by_origin(redis_addr: &str,
         .expect("unable to list invitations for origin")
 }
 
+pub fn get_secret_key_by_id(redis_addr: &str,
+                                id: u64)
+                                -> protocol::vault::OriginSecretKey {
+    let ds = vault_datastore::init(create_pool(redis_addr));
+    ds.origins.origin_secret_keys.find(&id).unwrap()
+}
+
 pub fn create_package(redis_addr: &str, hart: PathBuf) -> protocol::depotsrv::Package {
     let mut archive = PackageArchive::new(hart);
     let package = protocol::depotsrv::Package::from_archive(&mut archive).expect("unable to create package from archive");
@@ -146,8 +154,10 @@ pub fn get_package_by_ident(redis_addr: &str,
 
 pub fn create_origin_key(origin: &str, revision: &str, key_content: String, redis_addr: &str) {
     let mut depot_config = depot::Config::default();
-    depot_config.datastore_addr =
-        net::SocketAddrV4::from_str(redis_addr.replace("redis://", "").as_str()).expect("bad address");
+    depot_config.datastore_addr = net::SocketAddrV4::from_str(redis_addr
+                                                                  .replace("redis://", "")
+                                                                  .as_str())
+            .expect("bad address");
     let depot = depot::Depot::new(depot_config).unwrap();
 
     let origin_key_file = depot.key_path(origin, revision);
@@ -157,10 +167,32 @@ pub fn create_origin_key(origin: &str, revision: &str, key_content: String, redi
     depot.datastore.origin_keys.write(&origin, &revision);
 }
 
-pub fn get_origin_keys_by_origin(origin: &str, redis_addr: &str) -> Vec<protocol::depotsrv::OriginKeyIdent> {
+pub fn create_secret_key(origin_id: u64,
+                         name: &str,
+                         revision: &str,
+                         body: &str,
+                         owner_id: u64,
+                         redis_addr: &str)
+                         -> protocol::vault::OriginSecretKey {
+    let mut key = protocol::vault::OriginSecretKey::new();
+    key.set_owner_id(owner_id);
+    key.set_name(name.to_string());
+    key.set_body(body.as_bytes().to_vec());
+    key.set_origin_id(origin_id);
+    key.set_revision(revision.to_string());
+    let datastore = vault_datastore::init(create_pool(redis_addr));
+    datastore.origins.origin_secret_keys.write(&mut key);
+    key
+}
+
+pub fn get_origin_keys_by_origin(origin: &str,
+                                 redis_addr: &str)
+                                 -> Vec<protocol::depotsrv::OriginKeyIdent> {
     let mut depot_config = depot::Config::default();
-    depot_config.datastore_addr =
-        net::SocketAddrV4::from_str(redis_addr.replace("redis://", "").as_str()).expect("bad address");
+    depot_config.datastore_addr = net::SocketAddrV4::from_str(redis_addr
+                                                                  .replace("redis://", "")
+                                                                  .as_str())
+            .expect("bad address");
     let depot = depot::Depot::new(depot_config).unwrap();
     let keys_list = depot.datastore.origin_keys.all(origin);
 
@@ -188,7 +220,7 @@ fn write_string_to_file(filename: &PathBuf, body: String) -> Result<bool, depot:
     let f = try!(File::create(&tempfile));
     let mut writer = BufWriter::new(&f);
     try!(writer.write_all(body.as_bytes()));
-//    info!("File added to Depot at {}", filename.to_string_lossy());
+    //    info!("File added to Depot at {}", filename.to_string_lossy());
     try!(fs::rename(&tempfile, &filename));
     Ok(true)
 }
