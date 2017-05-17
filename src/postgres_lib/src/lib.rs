@@ -13,6 +13,7 @@ use hab_originsrv::data_store::DataStore as originsrv_data_store;
 use hab_core::package::PackageIdent;
 use protocol::sessionsrv::Session;
 use hab_db::pool::Pool;
+use std::env;
 use std::ops::Deref;
 use std::str::FromStr;
 
@@ -171,11 +172,16 @@ pub fn get_origin_key_by_revision(data_store: originsrv_data_store,
 }
 
 fn data_store_config(database_name: &str) -> hab_db::config::DataStoreCfg {
+    let pw =  match env::var("PGPASSWORD") {
+        Ok(password) => Some(password.to_string()),
+        Err(_) => None
+    };
+
     let config = hab_db::config::DataStoreCfg {
         host: IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
         port: 5432,
         user: String::from("hab"),
-        password: None,
+        password: pw,
         database: String::from(database_name),
         connection_retry_ms: 300,
         connection_timeout_sec: 3600,
