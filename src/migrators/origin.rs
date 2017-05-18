@@ -24,6 +24,7 @@ impl OriginMigrator {
     }
 
     pub fn migrate(&self) {
+        println!("migrating origins...");
         let origins = redis_extraction::extract_origins(self.redis_uri.as_str());
 
         let re = Regex::new(r":(\d+)").unwrap();

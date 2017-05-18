@@ -29,6 +29,7 @@ impl SecretKeyMigrator {
     }
 
     pub fn migrate(&self) {
+        println!("migrating secret keys...");
         let keys = redis_extraction::extract_secret_keys(self.redis_uri.as_str());
 
         let re = Regex::new(r":(\d+)").unwrap();

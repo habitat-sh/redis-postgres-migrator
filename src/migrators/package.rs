@@ -24,6 +24,7 @@ impl PackageMigrator {
     }
 
     pub fn migrate(&self) {
+        println!("migrating packages...");
         let origins = redis_extraction::extract_origins(self.redis_uri.as_str());
 
         let re = Regex::new(r":(\d+)").unwrap();
@@ -42,7 +43,6 @@ impl PackageMigrator {
             .get_origin_by_name(redis_origin.get_name())
             .expect("unable to get origin from postgres")
             .expect("no origin found in postgres");
-        println!("migrating packages for origin:{}", redis_origin.get_name());
         for ident in redis_lib::get_package_idents_by_origin(self.redis_uri.as_str(),
                                                              redis_origin.get_name()) {
             if postgres_lib::get_package_by_ident(self.originsrv_store.clone(), ident.to_string().as_str())

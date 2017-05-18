@@ -29,6 +29,7 @@ impl InvitationMigrator {
     }
 
     pub fn migrate(&self) {
+        println!("migrating invitations...");
         let origins = redis_extraction::extract_origins(self.redis_uri.as_str());
 
         let re = Regex::new(r":(\d+)").unwrap();
@@ -47,8 +48,6 @@ impl InvitationMigrator {
             .get_origin_by_name(redis_origin.get_name())
             .expect("unable to get origin from postgres")
             .expect("no origin found in postgres");
-        println!("migrating invitations for origin:{}",
-                 redis_origin.get_name());
         for invite in redis_lib::get_invitations_by_origin(self.redis_uri.as_str(),
                                                            redis_origin.get_id()) {
             let invitee = postgres_lib::get_account(self.sessionsrv_store.clone(),
