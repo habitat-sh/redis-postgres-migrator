@@ -24,23 +24,23 @@ println!("four");
                                            originsrv_data_store.clone(),
                                            sessionsrv_data_store.clone())
             .migrate();
-println("five");
+println!("five");
     migrators::invitation::InvitationMigrator::new(redis_address.to_string(),
                                                    originsrv_data_store.clone(),
                                                    sessionsrv_data_store.clone())
             .migrate();
-println("six");
+println!("six");
     migrators::secret_key::SecretKeyMigrator::new(redis_address.to_string(),
                                                   originsrv_data_store.clone(),
                                                   sessionsrv_data_store.clone())
             .migrate();
-println("seven");
+println!("seven");
     migrators::package::PackageMigrator::new(redis_address.to_string(),
                                              originsrv_data_store.clone())
             .migrate();
-println("eight");
+println!("eight");
     migrate_origin_public_keys(redis_address);
-println("nine");
+println!("nine");
 }
 
 fn migrate_origin_public_keys(redis_addr: &str) {
