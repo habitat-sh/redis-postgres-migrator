@@ -184,7 +184,7 @@ fn data_store_config(database_name: &str) -> hab_db::config::DataStoreCfg {
         password: pw,
         database: String::from(database_name),
         connection_retry_ms: 300,
-        connection_timeout_sec: 3600,
+        connection_timeout_sec: 60,
         connection_test: false,
         pool_size: (num_cpus::get() * 2) as u32,
     };
