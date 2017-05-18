@@ -9,30 +9,38 @@ use std::env;
 use migrator::migrators;
 
 fn main() {
+println!("Starting the run of the program");
     let args: Vec<_> = env::args().collect();
     let redis_address = &args[1];
-
+println!("one");
     // We start with transferring accounts, which live in the builder_sessionsrv data store
     let sessionsrv_data_store = postgres_lib::create_sessionsrv_data_store();
+println!("two");
     let originsrv_data_store = postgres_lib::create_originsrv_data_store();
-
+println("three");
     migrators::account::redis_to_postgres(redis_address, sessionsrv_data_store.clone());
+println!("four");
     migrators::origin::OriginMigrator::new(redis_address.to_string(),
                                            originsrv_data_store.clone(),
                                            sessionsrv_data_store.clone())
             .migrate();
+println("five");
     migrators::invitation::InvitationMigrator::new(redis_address.to_string(),
                                                    originsrv_data_store.clone(),
                                                    sessionsrv_data_store.clone())
             .migrate();
+println("six");
     migrators::secret_key::SecretKeyMigrator::new(redis_address.to_string(),
                                                   originsrv_data_store.clone(),
                                                   sessionsrv_data_store.clone())
             .migrate();
+println("seven");
     migrators::package::PackageMigrator::new(redis_address.to_string(),
                                              originsrv_data_store.clone())
             .migrate();
+println("eight");
     migrate_origin_public_keys(redis_address);
+println("nine");
 }
 
 fn migrate_origin_public_keys(redis_addr: &str) {
