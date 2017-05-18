@@ -29,6 +29,7 @@ impl OriginKeyMigrator {
     }
 
     pub fn migrate(&self) {
+        println!("migrating origin keys...");
         let origin_keys = &self.origin_keys;
 
         let pg_origin = self.originsrv_store

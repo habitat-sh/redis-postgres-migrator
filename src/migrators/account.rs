@@ -5,6 +5,7 @@ use redis_extraction;
 use regex::Regex;
 
 pub fn redis_to_postgres(redis_addr: &str, data_store: session_srv::data_store::DataStore) {
+    println!("migrating accounts...");
     let accounts = redis_extraction::extract_accounts(redis_addr);
 
     let re = Regex::new(r":(\d+)").unwrap();
@@ -14,7 +15,6 @@ pub fn redis_to_postgres(redis_addr: &str, data_store: session_srv::data_store::
             let account_id_string = &cap[1];
             let account_id = account_id_string.parse::<u64>();
 
-            println!("{:?}", cap);
             redis_to_postgres_account(redis_addr, ds, account_id.unwrap())
         }
     }
