@@ -177,11 +177,11 @@ pub fn is_account_in_origin(data_store: sessionsrv_data_store,
                             -> bool {
     let mut request = protocol::sessionsrv::AccountOriginListRequest::new();
     request.set_account_id(account_id);
-    for origin in data_store
+    for o in data_store
             .get_origins_by_account(&request)
             .expect("failed to list origins by account")
             .get_origins() {
-        if origin == origin {
+        if o.as_str() == origin {
             return true;
         }
     }
