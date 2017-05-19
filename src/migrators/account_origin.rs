@@ -38,19 +38,19 @@ impl AccountOriginMigrator {
     }
 
     pub fn migrate_account(&self, id: u64) {
-        let redis_account = redis_lib::find_account_by_id(redis_addr, id.to_string());
-        let account_origins = redis_lib::get_origins_by_account(redis_account.get_id());
+        let redis_account = redis_lib::find_account_by_id(self.redis_uri.as_str(), id.to_string());
+        let account_origins = redis_lib::get_origins_by_account(self.redis_uri.as_str(), redis_account.get_id());
 
         for origin in account_origins {
-            if postgres_lib::is_account_in_origin(self.sessionsrv_store.clone(), origin, id) {
+            if postgres_lib::is_account_in_origin(self.sessionsrv_store.clone(), origin.clone(), id) {
                 return;
             }
 
             println!("migrating origin {} in account {}",
-                     origin,
+                     origin.clone(),
                      redis_account.get_name());
             let pg_origin = self.originsrv_store
-                .get_origin_by_name(origin)
+                .get_origin_by_name(origin.as_str())
                 .expect("unable to get origin from postgres")
                 .expect("no origin found in postgres");
             let pg_account = postgres_lib::get_account(self.sessionsrv_store.clone(),

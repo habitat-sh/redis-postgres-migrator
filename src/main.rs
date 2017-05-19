@@ -20,7 +20,7 @@ println!("Starting the run of the program");
                                            originsrv_data_store.clone(),
                                            sessionsrv_data_store.clone())
             .migrate();
-    migrators::secret_key::AccountOriginMigrator::new(redis_address.to_string(),
+    migrators::account_origin::AccountOriginMigrator::new(redis_address.to_string(),
                                                   originsrv_data_store.clone(),
                                                   sessionsrv_data_store.clone())
             .migrate();
