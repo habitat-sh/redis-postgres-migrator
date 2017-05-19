@@ -47,7 +47,7 @@ impl PackageMigrator {
                                                              redis_origin.get_name()) {
             if postgres_lib::get_package_by_ident(self.originsrv_store.clone(), ident.to_string().as_str())
                    .is_some() {
-                return;
+                continue;
             }
 
             println!("migrating package :{}", ident.to_string());
