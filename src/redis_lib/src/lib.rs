@@ -114,6 +114,11 @@ pub fn create_package(redis_addr: &str, hart: PathBuf) -> protocol::depotsrv::Pa
     package
 }
 
+pub fn get_origins_by_account(redis_addr: &str, id: u64) -> Vec<String> {
+    let ds = vault_datastore::init(create_pool(redis_addr));
+    ds.origins.list_account_origins(id).expect("failed to get origins for account")
+}
+
 pub fn find_account_by_id(redis_addr: &str, id: String) -> protocol::sessionsrv::Account {
     let pool = create_pool(redis_addr);
     let ds = DataStore::new(pool);

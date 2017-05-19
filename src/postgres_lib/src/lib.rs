@@ -171,10 +171,40 @@ pub fn get_origin_key_by_revision(data_store: originsrv_data_store,
         .expect("failed to get public keys")
 }
 
+pub fn is_account_in_origin(data_store: sessionsrv_data_store,
+                            origin: String,
+                            account_id: u64)
+                            -> bool {
+    let mut request = protocol::sessionsrv::AccountOriginListRequest::new();
+    request.set_account_id(account_id);
+    for origin in data_store
+            .get_origins_by_account(&request)
+            .expect("failed to list origins by account")
+            .get_origins() {
+        if origin == origin {
+            return true;
+        }
+    }
+    return false;
+}
+
+pub fn create_account_origin(data_store: sessionsrv_data_store,
+                            origin_id: u64,
+                            origin_name: &str,
+                            account_id: u64,
+                            account_name: &str) {
+    let mut aoc = protocol::sessionsrv::AccountOriginCreate::new();
+    aoc.set_account_id(account_id);
+    aoc.set_origin_id(origin_id);
+    aoc.set_origin_name(origin_name.to_string());
+    aoc.set_account_name(account_name.to_string());
+    data_store.create_origin(&aoc).expect("unable to save account origin");
+}
+
 fn data_store_config(database_name: &str) -> hab_db::config::DataStoreCfg {
-    let pw =  match env::var("PGPASSWORD") {
+    let pw = match env::var("PGPASSWORD") {
         Ok(password) => Some(password.to_string()),
-        Err(_) => None
+        Err(_) => None,
     };
 
     let config = hab_db::config::DataStoreCfg {
