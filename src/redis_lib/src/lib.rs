@@ -205,6 +205,7 @@ pub fn get_origin_keys_by_origin(origin: &str,
 
 pub fn get_key_body(origin: &str, revision: &str) -> String {
     let location = key_path(origin, revision);
+    println!("opening key at {}", location.to_string_lossy());
     let mut file = match File::open(location) {
         Ok(file) => file,
         Err(_) => panic!("that key file does not exist"),
