@@ -49,7 +49,7 @@ impl AccountOriginMigrator {
             if postgres_lib::is_account_in_origin(self.sessionsrv_store.clone(),
                                                   origin.clone(),
                                                   pg_account.get_id()) {
-                return;
+                break;
             }
 
             println!("migrating redis origin {} in redis account {} to postgres account {}",
