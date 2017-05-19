@@ -52,7 +52,8 @@ impl OriginKeyMigrator {
             okc.set_revision(key.get_revision().to_string());
             okc.set_origin_id(pg_origin.get_id());
             okc.set_owner_id(pg_origin.get_owner_id());
-            okc.set_body(redis_lib::get_key_body(key.get_location()).into_bytes());
+            okc.set_body(redis_lib::get_key_body(key.get_origin(), key.get_revision())
+                             .into_bytes());
 
             self.originsrv_store.create_origin_public_key(&okc);
         }

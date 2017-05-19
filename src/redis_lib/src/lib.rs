@@ -1,3 +1,4 @@
+extern crate crypto;
 extern crate habitat_depot as depot;
 extern crate habitat_builder_sessionsrv_redis as hab_sessionsrv;
 extern crate habitat_builder_protocol_redis as protocol;
@@ -7,9 +8,12 @@ extern crate habitat_core_redis as hab_core;
 extern crate r2d2;
 extern crate r2d2_redis;
 
+use crypto::sha2::Sha256;
+use crypto::digest::Digest;
+use std::env;
 use std::net;
 use std::ops::Deref;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use dbcache::BasicSet;
 use dbcache::data_store::Pool;
@@ -199,7 +203,8 @@ pub fn get_origin_keys_by_origin(origin: &str,
     keys_list.unwrap()
 }
 
-pub fn get_key_body(location: &str) -> String {
+pub fn get_key_body(origin: &str, revision: &str) -> String {
+    let location = key_path(origin, revision);
     let mut file = match File::open(location) {
         Ok(file) => file,
         Err(_) => panic!("that key file does not exist"),
@@ -211,6 +216,23 @@ pub fn get_key_body(location: &str) -> String {
         .expect("failed to read that key file");
 
     contents
+}
+
+fn key_path(key: &str, rev: &str) -> PathBuf {
+    let config_path = match env::var("KEY_ROOT") {
+        Ok(root) => root.to_string(),
+        Err(_) => String::from("/hab/svc/builder-depot/data")
+    };
+
+    let mut digest = Sha256::new();
+    let mut output = [0; 64];
+    let key_with_rev = format!("{}-{}.pub", key, rev);
+    digest.input_str(&key_with_rev.to_string());
+    digest.result(&mut output);
+    Path::new(&config_path).join("keys")
+        .join(format!("{:x}", output[0]))
+        .join(format!("{:x}", output[1]))
+        .join(format!("{}-{}.pub", key, rev))
 }
 
 fn write_string_to_file(filename: &PathBuf, body: String) -> Result<bool, depot::Error> {
