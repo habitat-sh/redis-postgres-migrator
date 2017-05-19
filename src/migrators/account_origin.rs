@@ -52,9 +52,10 @@ impl AccountOriginMigrator {
                 return;
             }
 
-            println!("migrating origin {} in account {}",
+            println!("migrating redis origin {} in redis account {} to postgres account {}",
                      origin.clone(),
-                     redis_account.get_name());
+                     redis_account.get_name(),
+                     pg_account.get_name());
             let pg_origin = self.originsrv_store
                 .get_origin_by_name(origin.as_str())
                 .expect("unable to get origin from postgres")
