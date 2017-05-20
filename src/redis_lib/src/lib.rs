@@ -97,9 +97,7 @@ pub fn get_invitations_by_origin(redis_addr: &str,
         .expect("unable to list invitations for origin")
 }
 
-pub fn get_secret_key_by_id(redis_addr: &str,
-                                id: u64)
-                                -> protocol::vault::OriginSecretKey {
+pub fn get_secret_key_by_id(redis_addr: &str, id: u64) -> protocol::vault::OriginSecretKey {
     let ds = vault_datastore::init(create_pool(redis_addr));
     ds.origins.origin_secret_keys.find(&id).unwrap()
 }
@@ -116,7 +114,9 @@ pub fn create_package(redis_addr: &str, hart: PathBuf) -> protocol::depotsrv::Pa
 
 pub fn get_origins_by_account(redis_addr: &str, id: u64) -> Vec<String> {
     let ds = vault_datastore::init(create_pool(redis_addr));
-    ds.origins.list_account_origins(id).expect("failed to get origins for account")
+    ds.origins
+        .list_account_origins(id)
+        .expect("failed to get origins for account")
 }
 
 pub fn find_account_by_id(redis_addr: &str, id: String) -> protocol::sessionsrv::Account {
@@ -127,6 +127,13 @@ pub fn find_account_by_id(redis_addr: &str, id: String) -> protocol::sessionsrv:
     let account = ds.accounts.find(&value).unwrap();
 
     account
+}
+
+pub fn get_origins_members(redis_addr: &str, origin_id: u64) -> Vec<String> {
+    let ds = vault_datastore::init(create_pool(redis_addr));
+    ds.origins
+        .list_origin_members(origin_id)
+        .expect("failed to get origin members")
 }
 
 pub fn find_origin_by_id(redis_addr: &str, id: u64) -> protocol::vault::Origin {
@@ -227,7 +234,7 @@ pub fn get_key_body(origin: &str, revision: &str) -> String {
 fn key_path(key: &str, rev: &str) -> PathBuf {
     let config_path = match env::var("KEY_ROOT") {
         Ok(root) => root.to_string(),
-        Err(_) => String::from("/hab/svc/builder-depot/data")
+        Err(_) => String::from("/hab/svc/builder-depot/data"),
     };
 
     let mut digest = Sha256::new();
@@ -235,7 +242,8 @@ fn key_path(key: &str, rev: &str) -> PathBuf {
     let key_with_rev = format!("{}-{}.pub", key, rev);
     digest.input_str(&key_with_rev.to_string());
     digest.result(&mut output);
-    Path::new(&config_path).join("keys")
+    Path::new(&config_path)
+        .join("keys")
         .join(format!("{:x}", output[0]))
         .join(format!("{:x}", output[1]))
         .join(format!("{}-{}.pub", key, rev))

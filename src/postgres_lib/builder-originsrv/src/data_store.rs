@@ -201,6 +201,24 @@ impl DataStore {
         Ok(response)
     }
 
+    pub fn create_origin_member(&self,
+                                origin_id: u64,
+                                origin_name: String,
+                                account_id: u64,
+                                account_name: String)
+                                -> Result<()> {
+        let mut request = originsrv::OriginInvitationListRequest::new();
+        request.set_origin_id(origin_id);
+        let conn = self.pool.get(&request)?;
+        conn.execute("SELECT * FROM insert_origin_member_v1($1, $2, $3, $4)",
+                     &[&(origin_id as i64),
+                       &origin_name,
+                       &(account_id as i64),
+                       &account_name])
+            .map_err(Error::OriginMemberList)?;
+        Ok(())
+    }
+
     // This function can fail if the corresponding sessionsrv shard is down - this is so that the
     // user won't experience delay on seeing the invitation be accepted.
     pub fn accept_origin_invitation(&self,
