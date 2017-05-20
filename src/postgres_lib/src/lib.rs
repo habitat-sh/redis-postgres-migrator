@@ -188,6 +188,23 @@ pub fn is_account_in_origin(data_store: sessionsrv_data_store,
     return false;
 }
 
+pub fn is_member_in_origin(data_store: originsrv_data_store,
+                            account: String,
+                            origin_id: u64)
+                            -> bool {
+    let mut request = protocol::originsrv::OriginMemberListRequest::new();
+    request.set_origin_id(origin_id);
+    for m in data_store
+            .list_origin_members(&request)
+            .expect("failed to list origins members")
+            .get_members() {
+        if m.as_str() == account {
+            return true;
+        }
+    }
+    return false;
+}
+
 pub fn create_account_origin(data_store: sessionsrv_data_store,
                             origin_id: u64,
                             origin_name: &str,
