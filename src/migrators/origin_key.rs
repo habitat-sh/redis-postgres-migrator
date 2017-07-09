@@ -41,7 +41,7 @@ impl OriginKeyMigrator {
                                                         pg_origin.get_name(),
                                                         key.get_revision())
                        .is_some() {
-                return;
+                continue;
             }
 
             println!("migrating key {:?}", key);
